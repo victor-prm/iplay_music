@@ -6,7 +6,7 @@ const url = `https://accounts.spotify.com/authorize?response_type=code&client_id
 
 export default function Page() {
     return (
-        <a href={url}>
+        <a href={url} className="font-headline">
             Log in with Spotify
         </a>
     )

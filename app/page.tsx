@@ -1,20 +1,27 @@
-import { cookies } from "next/headers";
+import { fetchFromSpotify, getFilteredPlaylists } from "./_lib/actions";
+import { buildGenreQuery } from "./_utils/helpers";
 
 export default async function Home() {
-  const cookieStore = await cookies();
-  const accessTokenCookie: any = cookieStore.get("IPM_access_token");
-  const accessRefreshCookie = cookieStore.get("IPM_refresh_token");
+  "use client"
 
-  console.log(accessTokenCookie, accessRefreshCookie)
+  // 1️⃣ Search for playlists
+  /*  "https://api.spotify.com/v1/search?q=pop&type=playlist&limit=20" */
+  /*  `https://api.spotify.com/v1/search?q=${buildGenreQuery("rock")}&type=artist&limit=20` */
+  /*  `https://api.spotify.com/v1/me/shows?offset=0&limit=20`*/
+  /*  `https://api.spotify.com/v1/me/playlists` */
 
-  const response = await fetch("https://api.spotify.com/v1/me", {
-    headers: {
-      Authorization: `Bearer ${accessTokenCookie.value}`,
-    },
-  });
+  const searchData: any = await fetchFromSpotify(
+`https://api.spotify.com/v1/search?q=genre:rock&type=artist&limit=20&market=DK`
+  );
 
-  const text = await response.text();
-  console.log("Spotify raw response:", response.status, text);
+  // 2️⃣ Get the array of playlists
+  const searchResults = searchData.playlists?.items || [];
 
-  return null;
+  // 3️⃣ Filter playlists
+  const data = await getFilteredPlaylists(searchResults, 20, 10);
+
+  //console.log(data);
+  console.log(searchData)
+
+  return <h1>Home</h1>;
 }

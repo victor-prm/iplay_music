@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
-:root {
- /*  --background: #ffffff;
+@theme inline {
+  /*  --background: #ffffff;
   --foreground: #171717; */
+  --font-headline: var(--font-poppins);
+  --font-body: var(--font-dm-sans);
+}
+
+body{
+  font-family: sans-serif;
 }
