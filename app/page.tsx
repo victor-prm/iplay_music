@@ -10,8 +10,58 @@ export default async function Home() {
   /*  `https://api.spotify.com/v1/me/shows?offset=0&limit=20`*/
   /*  `https://api.spotify.com/v1/me/playlists` */
 
+  let genres = [
+    "acoustic",
+    "afrobeat",
+    "alt-rock",
+    "alternative",
+    "ambient",
+    "anime",
+    "blues",
+    "chill",
+    "classical",
+    "country",
+    "dance",
+    "deep-house",
+    "disco",
+    "drum-and-bass",
+    "dubstep",
+    "edm",
+    "electronic",
+    "folk",
+    "funk",
+    "gospel",
+    "grime",
+    "hard-rock",
+    "hip-hop",
+    "house",
+    "indie",
+    "indie-pop",
+    "j-pop",
+    "jazz",
+    "k-pop",
+    "latin",
+    "lo-fi",
+    "metal",
+    "pop",
+    "punk",
+    "r-n-b",
+    "rap",
+    "reggae",
+    "reggaeton",
+    "rock",
+    "salsa",
+    "singer-songwriter",
+    "soul",
+    "techno",
+    "trance",
+    "tropical-house",
+    "vocal",
+    "world-music"
+  ]
+
   const searchData: any = await fetchFromSpotify(
-`https://api.spotify.com/v1/search?q=genre:rock&type=artist&limit=20&market=DK`
+    `https://api.spotify.com/v1/search?q=genre:techno&type=artist&market=DK&limit=20`
   );
 
   // 2️⃣ Get the array of playlists
