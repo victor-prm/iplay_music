@@ -1,4 +1,5 @@
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation";
 
 export async function fetchFromSpotify(link: string) {
     const cookieStore = await cookies();
@@ -6,7 +7,7 @@ export async function fetchFromSpotify(link: string) {
     const accessRefreshCookie = cookieStore.get("IPM_refresh_token");
 
     if (!accessTokenCookie) {
-        throw new Error("No access token");
+        redirect("/login")
     }
 
     //console.log(accessTokenCookie, accessRefreshCookie)

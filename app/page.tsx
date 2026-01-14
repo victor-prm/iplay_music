@@ -61,7 +61,7 @@ export default async function Home() {
   ]
 
   const searchData: any = await fetchFromSpotify(
-    `https://api.spotify.com/v1/search?q=genre:techno&type=artist&market=DK&limit=20`
+    `https://api.spotify.com/v1/search?q=genre:soul&type=artist&market=DK&limit=20`
   );
 
   // 2️⃣ Get the array of playlists
@@ -71,7 +71,7 @@ export default async function Home() {
   const data = await getFilteredPlaylists(searchResults, 20, 10);
 
   //console.log(data);
-  console.log(searchData)
+  console.log(searchData.artists.items)
 
   return <h1>Home</h1>;
 }
