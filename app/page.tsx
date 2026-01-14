@@ -2,7 +2,6 @@ import { fetchFromSpotify, getFilteredPlaylists } from "./_lib/actions";
 import { buildGenreQuery } from "./_utils/helpers";
 
 export default async function Home() {
-  "use client"
 
   // 1️⃣ Search for playlists
   /*  "https://api.spotify.com/v1/search?q=pop&type=playlist&limit=20" */
