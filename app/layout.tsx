@@ -38,7 +38,9 @@ export default function RootLayout({
         className={`${poppins.variable} ${dmSans.variable} antialiased`}
       >
         <Header></Header>
-        {children}
+        <main className="container mx-auto py-12 h-500 bg-black/5">
+          {children}
+        </main>
         <Footer></Footer>
       </body>
     </html>
