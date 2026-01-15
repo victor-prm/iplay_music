@@ -6,7 +6,7 @@ export async function fetchFromSpotify(url: string) {
     const token = cookieStore.get("IPM_access_token");
 
     if (!token) {
-        throw new Error("No access token");
+       redirect("/login")
     }
 
     const response = await fetch(url, {
