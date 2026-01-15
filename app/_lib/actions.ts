@@ -184,8 +184,8 @@ export async function getArtistsByName(names: string[], market = "DK") {
             const bestMatch: SpotifyArtist =
                 nameMatches.length > 0
                     ? nameMatches.reduce((prev, curr) =>
-                          curr.followers.total > prev.followers.total ? curr : prev
-                      )
+                        curr.followers.total > prev.followers.total ? curr : prev
+                    )
                     : data.artists.items[0];
 
             results.push(bestMatch);
@@ -203,4 +203,75 @@ export async function getArtistsByName(names: string[], market = "DK") {
     uniqueResults.sort((a, b) => b.popularity - a.popularity);
 
     return uniqueResults;
+}
+
+
+interface SpotifyArtist {
+    id: string;
+    name: string;
+    followers: { total: number };
+    popularity: number;
+    genres?: string[];
+    images?: { url: string; height?: number; width?: number }[];
+    [key: string]: any;
+}
+
+/**
+ * Fetch artists by genre slug, filter by genre keywords,
+ * ensure at least `minResults` results (fetch more pages if necessary)
+ */
+export async function getArtistsByGenre(
+    genreSlug: string,
+    minResults = 10,
+    market = "DK",
+    maxTries = 5 // maximum number of fetch attempts
+): Promise<SpotifyArtist[]> {
+    // Convert slug to a readable genre string
+    const genreQuery = genreSlug.replace(/-/g, " "); // "trash-metal" → "trash metal"
+    const limitPerPage = 20;
+    let offset = 0;
+    let results: SpotifyArtist[] = [];
+    let tries = 0;
+
+    while (results.length < minResults && tries < maxTries) {
+        const data: any = await fetchFromSpotify(
+            `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+                genreQuery
+            )}&type=artist&market=${market}&limit=${limitPerPage}&offset=${offset}`,
+            { revalidate: 3600 }
+        );
+
+        if (!data.artists?.items?.length) break;
+
+        const matchesGenre = (artistGenre: string, query: string) => {
+            // \b = word boundary
+            // 'i' = case-insensitive
+            const regex = new RegExp(`\\b${query}\\b`, "i");
+            return regex.test(artistGenre);
+        };
+
+        // Filter artists by genre matching the full query string
+        const filtered = data.artists.items.filter((artist: SpotifyArtist) => {
+            if (!artist.genres?.length) return false;
+            return artist.genres.some((g) => matchesGenre(g, genreQuery));
+        });
+
+        results.push(...filtered);
+
+        // If fewer than limitPerPage returned, no more results
+        if (data.artists.items.length < limitPerPage) break;
+
+        offset += limitPerPage;
+        tries++;
+    }
+
+    // Deduplicate by id
+    const uniqueResults: SpotifyArtist[] = Array.from(
+        new Map(results.map((a) => [a.id, a])).values()
+    );
+
+    // Sort by followers (most popular first)
+    uniqueResults.sort((a, b) => (b.followers?.total ?? 0) - (a.followers?.total ?? 0));
+
+    return uniqueResults.slice(0, minResults);
 }
