@@ -1,5 +1,5 @@
 const CLIENT_ID = process.env.CLIENT_ID!;
-const REDIRECT_URI = process.env.REDIRECT_URI!;
+const REDIRECT_URI = process.env.REDIRECT_URI ?? "http://localhost:3000"; 
 
 // Include all the scopes your app needs
 const SCOPES = [
