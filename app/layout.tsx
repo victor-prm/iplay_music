@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: "The world's most innovative personal music player",
 };
 
+import Header from "./_components/Header";
+import Footer from "./_components/Footer";
+
 //Static fonts
 const poppins = Poppins({
   weight: ["300", "700"],
@@ -30,10 +33,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+
       <body
         className={`${poppins.variable} ${dmSans.variable} antialiased`}
       >
+        <Header></Header>
         {children}
+        <Footer></Footer>
       </body>
     </html>
   );
