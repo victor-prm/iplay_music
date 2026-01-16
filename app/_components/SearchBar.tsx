@@ -29,6 +29,18 @@ export default function SearchBar({ market = "DK" }) {
         playlist: "playlists",
     };
 
+    function getResultMeta(res: any): string | null {
+        if (res.type === "album" || res.type === "track") {
+            return res.item.artists?.[0]?.name ?? null;
+        }
+
+        if (res.type === "playlist") {
+            return res.item.owner?.display_name ?? null;
+        }
+
+        return null;
+    }
+
     const debouncedSearch = useMemo(
         () =>
             debounce(async (value: string, types: string) => {
@@ -120,16 +132,7 @@ export default function SearchBar({ market = "DK" }) {
                             .filter((res) => res.item)
                             .map((res) => {
                                 const item = res.item;
-
-                                let extra: string | null = null;
-
-                                if (res.type === "album" || res.type === "track") {
-                                    extra = item.artists?.[0]?.name ?? null;
-                                }
-
-                                if (res.type === "playlist") {
-                                    extra = item.owner?.display_name ?? null;
-                                }
+                                const meta = getResultMeta(res);
 
                                 return (
                                     <li
@@ -145,10 +148,11 @@ export default function SearchBar({ market = "DK" }) {
                                         >
                                             <article className="flex flex-col">
                                                 <h3>{item.name}</h3>
+                                                
 
-                                                <small className="capitalize">
+                                                <small className="capitalize opacity-50">
                                                     {res.type}
-                                                    {extra && <> – {extra}</>}
+                                                    {meta && <> • {meta}</>}
                                                 </small>
                                             </article>
                                         </Link>
