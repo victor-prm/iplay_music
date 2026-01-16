@@ -91,27 +91,35 @@ export default function SearchBar({ market = "DK" }) {
             debouncedSearch(query, types);
         }
     }
-
+     //overflow-y-auto [overflow-y:overlay] [scrollbar-gutter:stable]
     return (
-        <div className="flex flex-col relative w-full max-w-80">
+        <div className="relative w-full max-w-80">
             <input
-                className="bg-white px-2"
+                className="bg-white px-2 w-full"
                 type="text"
                 placeholder="Search"
                 value={query}
                 onChange={handleChange}
+                id="search-field"
+                name="search-field"
             />
 
             {results.length > 0 && (
-                <div className="absolute w-full mt-8 bg-gray-400 z-10 p-2 rounded-md">
-                    {/* Radios are now part of the results dropdown */}
-                    <FilterRadios value={filter} onChange={handleFilterChange} />
+                <div
+                    className="absolute left-0 right-0 top-full mt-3 bg-gray-400/50 backdrop-blur-xl z-10 rounded-md overflow-hidden"
+                >
+                    {/* Radios sticky at the top */}
+                    <div className="p-2 sticky top-0 z-10">
+                        <FilterRadios value={filter} onChange={handleFilterChange} />
+                    </div>
 
-                    <ul>
+                    {/* Scrollable list */}
+                   
+                    <ul className="overflow-y-auto max-h-[calc(100vh-8rem)] px-2">
                         {results
-                            .filter((res) => res.item) // guard null items
+                            .filter((res) => res.item)
                             .map((res) => (
-                                <li key={`${res.type}-${res.item.id}`} className="p-1 odd:bg-white/50">
+                                <li key={`${res.type}-${res.item.id}`} className="p-1 odd:bg-white/50 rounded-sm">
                                     <Link
                                         href={`/${res.type}/${res.item.id}`}
                                         onClick={() => {

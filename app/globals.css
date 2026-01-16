@@ -7,6 +7,20 @@
   --font-body: var(--font-dm-sans);
 }
 
-body{
+body {
   font-family: sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 0.2rem;
+  height: 0.20rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 100vh;
 }
