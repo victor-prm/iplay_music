@@ -1,55 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import {debounce} from "lodash";
 import { fetchFromSpotify } from "../_lib/actions";
 import Link from "next/link";
 
 export default function SearchBar({ market = "DK" }) {
-    const [query, setQuery] = useState("");
-    const [results, setResults] = useState<any[]>([]);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<any[]>([]);
 
-    async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const value = e.target.value;
-        setQuery(value);
-
+  const debouncedSearch = useMemo(
+    () =>
+      debounce(async (value: string) => {
         if (!value) {
-            setResults([]);
-            return;
+          setResults([]);
+          return;
         }
 
         const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-            value
+          value
         )}&type=artist&market=${market}&limit=5`;
 
         const data = await fetchFromSpotify(url);
         setResults(data.artists.items);
-    }
-    return (
-        <div className="flex flex-col relative w-[50%]">
-            <input
-                className="bg-white px-2"
-                type="text"
-                placeholder="Search"
-                value={query}
-                onChange={handleChange}
-            />
+      }, 300),
+    [market]
+  );
 
-            <ul className="absolute mt-8 p-1 bg-gray-400">
-                {results.map((artist) => (
-                    <li key={artist.id} className="p-1 rounded-xs odd:bg-white/50">
-                        <Link
-                            href={`/artist/${artist.id}`}
-                            onClick={() => {
-                                setResults([]);
-                                setQuery("");
-                            }}
-                        >
-                            {artist.name}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setQuery(value);
+    debouncedSearch(value);
+  }
 
-    );
+  return (
+    <div className="flex flex-col relative w-[50%]">
+      <input
+        className="bg-white px-2"
+        type="text"
+        placeholder="Search"
+        value={query}
+        onChange={handleChange}
+      />
+
+      {results.length > 0 && (
+        <ul className="absolute mt-8 p-1 bg-gray-400">
+          {results.map((artist) => (
+            <li key={artist.id} className="p-1 odd:bg-white/50">
+              <Link
+                href={`/artist/${artist.id}`}
+                onClick={() => {
+                  setResults([]);
+                  setQuery("");
+                }}
+              >
+                {artist.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }
