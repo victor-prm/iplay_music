@@ -32,17 +32,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-
+    <html lang="en" className="min-h-screen">
+      
       <body
-        className={`${poppins.variable} ${dmSans.variable} antialiased`}
+        className={`
+          ${poppins.variable}
+          ${dmSans.variable}
+          antialiased
+        text-iplay-white
+          bg-[linear-gradient(to_top_right,var(--color-iplay-plum),var(--color-iplay-night))]
+        `}
       >
+
         <Header></Header>
-        <main className="container p-2 mx-auto py-12 h-500 bg-black/5">
+        <main className="container p-2 mx-auto py-12">
           {children}
         </main>
         <Footer></Footer>
+      
       </body>
-    </html>
+    </html >
   );
 }
