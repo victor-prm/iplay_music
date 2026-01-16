@@ -91,7 +91,7 @@ export default function SearchBar({ market = "DK" }) {
             debouncedSearch(query, types);
         }
     }
-     //overflow-y-auto [overflow-y:overlay] [scrollbar-gutter:stable]
+    //overflow-y-auto [overflow-y:overlay] [scrollbar-gutter:stable]
     return (
         <div className="relative w-full max-w-80">
             <input
@@ -114,23 +114,47 @@ export default function SearchBar({ market = "DK" }) {
                     </div>
 
                     {/* Scrollable list */}
-                   
+
                     <ul className="overflow-y-auto max-h-[calc(100vh-8rem)] px-2">
                         {results
                             .filter((res) => res.item)
-                            .map((res) => (
-                                <li key={`${res.type}-${res.item.id}`} className="p-1 odd:bg-white/50 rounded-sm">
-                                    <Link
-                                        href={`/${res.type}/${res.item.id}`}
-                                        onClick={() => {
-                                            setResults([]);
-                                            setQuery("");
-                                        }}
+                            .map((res) => {
+                                const item = res.item;
+
+                                let extra: string | null = null;
+
+                                if (res.type === "album" || res.type === "track") {
+                                    extra = item.artists?.[0]?.name ?? null;
+                                }
+
+                                if (res.type === "playlist") {
+                                    extra = item.owner?.display_name ?? null;
+                                }
+
+                                return (
+                                    <li
+                                        key={`${res.type}-${item.id}`}
+                                        className="p-1 odd:bg-white/50 rounded-sm"
                                     >
-                                        {res.item.name} - <span className="capitalize">{res.type}</span>
-                                    </Link>
-                                </li>
-                            ))}
+                                        <Link
+                                            href={`/${res.type}/${item.id}`}
+                                            onClick={() => {
+                                                setResults([]);
+                                                setQuery("");
+                                            }}
+                                        >
+                                            <article className="flex flex-col">
+                                                <h3>{item.name}</h3>
+
+                                                <small className="capitalize">
+                                                    {res.type}
+                                                    {extra && <> – {extra}</>}
+                                                </small>
+                                            </article>
+                                        </Link>
+                                    </li>
+                                );
+                            })}
                     </ul>
                 </div>
             )}
