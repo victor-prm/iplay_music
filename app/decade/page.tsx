@@ -1,5 +1,5 @@
 import { getArtistsByName } from "@/app/_lib/actions";
-import { names1960s, names1970s, names1980s, names1990s, names2000s, names2010s, names2020s } from "../data/static";
+import { names1960s, names1970s, names1980s, names1990s, names2000s, names2010s, names2020s } from "../_data/static";
 import Image from "next/image";
 
 export default async function ArtistsPage() {

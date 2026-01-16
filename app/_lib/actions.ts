@@ -227,7 +227,7 @@ export async function getArtistsByGenre(
     maxTries = 5 // maximum number of fetch attempts
 ): Promise<SpotifyArtist[]> {
     // Convert slug to a readable genre string
-    const genreQuery = genreSlug.replace(/-/g, " "); // "trash-metal" → "trash metal"
+    const genreQuery = genreSlug.replaceAll(/_/g, " "); // "trash_metal" → "trash metal"
     const limitPerPage = 20;
     let offset = 0;
     let results: SpotifyArtist[] = [];

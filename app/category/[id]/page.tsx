@@ -20,7 +20,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div>
-      <h1 className="capitalize font-bold text-2xl">{genreSlug.replace("-", " ")}</h1>
+      <h1 className="capitalize font-bold text-2xl">{genreSlug.replaceAll("_", " ")}</h1>
 
       {artists.length === 0 ? (<p>No artists found for this genre.</p>) : (
         <>
