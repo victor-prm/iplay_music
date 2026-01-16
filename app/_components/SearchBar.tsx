@@ -90,7 +90,7 @@ export default function SearchBar({ market = "DK" }) {
     }
 
     return (
-        <div className="flex flex-col relative w-[50%]">
+        <div className="flex flex-col relative w-full max-w-80">
             <input
                 className="bg-white px-2"
                 type="text"
