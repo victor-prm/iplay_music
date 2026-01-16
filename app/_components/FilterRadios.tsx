@@ -12,15 +12,21 @@ export default function FilterRadios({
     options = ["all", "artist", "album", "track", "playlist"],
 }: FilterRadiosProps) {
     return (
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-1 mb-2">
             {options.map((opt) => (
-                <label key={opt} className="flex items-center gap-1">
+                <label
+                    key={opt}
+                    className={`flex items-center justify-center px-3 py-1 text-xs rounded-full border-2 cursor-pointer
+                    ${value === opt ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-500 border-gray-500"}
+                    `}
+                >
                     <input
                         type="radio"
                         name="filter"
                         value={opt}
                         checked={value === opt}
                         onChange={() => onChange(opt)}
+                        className="sr-only" // hides the input but keeps it accessible
                     />
                     <span className="capitalize">{opt}</span>
                 </label>

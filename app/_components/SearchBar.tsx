@@ -100,7 +100,7 @@ export default function SearchBar({ market = "DK" }) {
             />
 
             {results.length > 0 && (
-                <div className="absolute w-full mt-2 bg-gray-400 z-10 p-2 rounded-md">
+                <div className="absolute w-full mt-8 bg-gray-400 z-10 p-2 rounded-md">
                     {/* Radios are now part of the results dropdown */}
                     <FilterRadios value={filter} onChange={handleFilterChange} />
 
