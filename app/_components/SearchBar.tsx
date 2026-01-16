@@ -5,6 +5,7 @@ import { debounce } from "lodash";
 import { fetchFromSpotify } from "../_lib/actions";
 import Link from "next/link";
 import FilterRadios from "./FilterRadios";
+import Fuse from "fuse.js";
 
 export default function SearchBar({ market = "DK" }) {
     const [query, setQuery] = useState("");
@@ -64,8 +65,10 @@ export default function SearchBar({ market = "DK" }) {
                     return true;
                 });
 
-                setResults(uniqueResults.slice(0, 10));
-                console.log(uniqueResults.slice(0, 10));
+                const fuse = new Fuse(uniqueResults, { keys: ["item.name"], threshold: 0.5 });
+                const bestMatches = fuse.search(value).map(res => res.item);
+                setResults(bestMatches.slice(0, 10));
+                console.log(bestMatches.slice(0, 10));
             }, 300),
         [market]
     );
