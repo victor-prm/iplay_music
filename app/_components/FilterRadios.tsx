@@ -17,7 +17,7 @@ export default function FilterRadios({
                 <label
                     key={opt}
                     className={`flex items-center justify-center px-2.5 p-0.5 text-xs rounded-full border-2 cursor-pointer
-                    ${value === opt ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-500 border-gray-500"}
+                    ${value === opt ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-500 border-black/40"}
                     `}
                 >
                     <input

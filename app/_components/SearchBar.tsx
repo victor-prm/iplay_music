@@ -77,7 +77,7 @@ export default function SearchBar({ market = "DK" }) {
                     return true;
                 });
 
-                const fuse = new Fuse(uniqueResults, { keys: ["item.name"], threshold: 0.5 });
+                const fuse = new Fuse(uniqueResults, { keys: ["item.name"], threshold: 0.7 });
                 const bestMatches = fuse.search(value).map(res => res.item);
                 setResults(bestMatches.slice(0, 10));
                 console.log(bestMatches.slice(0, 10));
@@ -107,7 +107,7 @@ export default function SearchBar({ market = "DK" }) {
     return (
         <div className="relative w-full max-w-80">
             <input
-                className="bg-white px-2 w-full"
+                className="bg-white px-2 w-full rounded-sm"
                 type="text"
                 placeholder="Search"
                 value={query}
