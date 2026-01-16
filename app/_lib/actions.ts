@@ -1,5 +1,6 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation";
+import { formatGenreQuery } from "../_utils/helpers";
 
 export async function fetchFromSpotify(
     url: string,
@@ -227,11 +228,13 @@ export async function getArtistsByGenre(
     maxTries = 5 // maximum number of fetch attempts
 ): Promise<SpotifyArtist[]> {
     // Convert slug to a readable genre string
-    const genreQuery = genreSlug.replaceAll(/_/g, " "); // "trash_metal" → "trash metal"
+    const genreQuery = formatGenreQuery(genreSlug) // "heavy_metal" → "heavy metal"
     const limitPerPage = 20;
     let offset = 0;
     let results: SpotifyArtist[] = [];
     let tries = 0;
+
+    console.log(genreQuery);
 
     while (results.length < minResults && tries < maxTries) {
         const data: any = await fetchFromSpotify(

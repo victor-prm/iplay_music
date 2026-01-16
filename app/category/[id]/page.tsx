@@ -1,4 +1,5 @@
 import { getArtistsByGenre } from "@/app/_lib/actions";
+import { formatGenreQuery } from "@/app/_utils/helpers";
 import Image from "next/image";
 
 interface CategoryPageProps {
@@ -20,7 +21,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div>
-      <h1 className="capitalize font-bold text-2xl">{genreSlug.replaceAll("_", " ")}</h1>
+      <h1 className="capitalize font-bold text-2xl">{formatGenreQuery(genreSlug)}</h1>
 
       {artists.length === 0 ? (<p>No artists found for this genre.</p>) : (
         <>
