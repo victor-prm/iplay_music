@@ -110,7 +110,7 @@ export default function SearchBar({ market = "DK" }) {
     return (
         <div className="relative w-full max-w-80">
             <input
-                className="bg-iplay-plum px-2 w-full rounded-sm placeholder-iplay-white/25"
+                className="bg-iplay-plum px-2 py-1 w-full rounded-sm placeholder-iplay-white/25 font-dm-sans"
                 type="text"
                 placeholder="Search"
                 value={query}
@@ -166,8 +166,8 @@ export default function SearchBar({ market = "DK" }) {
                                                 }
 
                                                 <hgroup className="flex flex-col">
-                                                    <h3>{item.name}</h3>
-                                                    <small className="capitalize opacity-50">
+                                                    <h3 className="font-poppins">{item.name}</h3>
+                                                    <small className="font-dm-sans capitalize opacity-50">
                                                         {res.type}
                                                         {meta && <> • {meta}</>}
                                                     </small>

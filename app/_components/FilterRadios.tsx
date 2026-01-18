@@ -28,7 +28,7 @@ export default function FilterRadios({
                         onChange={() => onChange(opt)}
                         className="sr-only" // hides the input but keeps it accessible
                     />
-                    <span className="capitalize font-headline">{opt}</span>
+                    <span className="capitalize font-dm-sans">{opt}</span>
                 </label>
             ))}
         </div>
