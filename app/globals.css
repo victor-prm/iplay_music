@@ -6,8 +6,11 @@
   --font-body: var(--font-dm-sans);
 
   /* Colors */
-  --color-iplay-night: #111625;
   --color-iplay-plum: #341931;
+  --color-iplay-night: #111625;
+  --color-iplay-grape: #96668F;
+
+  --color-iplay-black: #0F0A0F;
   --color-iplay-white: #FFFAFF;
 
   --color-iplay-pink: #FF1168;
@@ -25,6 +28,11 @@
   --color-iplay-blue: #115793;
 }
 
+html {
+  background-color: var(--color-iplay-black);
+  ;
+}
+
 body {
   font-family: sans-serif;
 }
@@ -32,13 +40,14 @@ body {
 ::-webkit-scrollbar {
   width: 0.25rem;
   height: 0.25rem;
+
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+   background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 100vh;
 }

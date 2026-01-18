@@ -3,7 +3,10 @@
 import { useState, useMemo } from "react";
 import { debounce } from "lodash";
 import { fetchFromSpotify } from "../_lib/actions";
+import { FaMusic } from "react-icons/fa";
+
 import Link from "next/link";
+import Image from "next/image";
 import FilterRadios from "./FilterRadios";
 import Fuse from "fuse.js";
 
@@ -107,7 +110,7 @@ export default function SearchBar({ market = "DK" }) {
     return (
         <div className="relative w-full max-w-80">
             <input
-                className="bg-white px-2 w-full rounded-sm"
+                className="bg-iplay-plum px-2 w-full rounded-sm placeholder-iplay-white/25"
                 type="text"
                 placeholder="Search"
                 value={query}
@@ -118,7 +121,7 @@ export default function SearchBar({ market = "DK" }) {
 
             {results.length > 0 && (
                 <div
-                    className="absolute left-0 right-0 top-full mt-3 bg-gray-400/50 backdrop-blur-xl z-10 rounded-md overflow-hidden"
+                    className="absolute left-0 right-0 top-full mt-3 bg-iplay-plum/75 backdrop-blur-xl z-10 rounded-md overflow-hidden"
                 >
                     {/* Radios sticky at the top */}
                     <div className="p-2 sticky top-0 z-10">
@@ -127,17 +130,18 @@ export default function SearchBar({ market = "DK" }) {
 
                     {/* Scrollable list */}
 
-                    <ul className="overflow-y-auto max-h-[calc(100vh-8rem)] px-2">
+                    <ul className="overflow-y-auto max-h-[calc(100vh-8rem)] px-2 pb-2">
                         {results
                             .filter((res) => res.item)
                             .map((res) => {
                                 const item = res.item;
                                 const meta = getResultMeta(res);
+                                let thumbnail = res.type === "track" ? item.album.images[0] : item.images[0];
 
                                 return (
                                     <li
                                         key={`${res.type}-${item.id}`}
-                                        className="p-1 odd:bg-white/50 rounded-sm"
+                                        className="p-1 odd:bg-white/10 rounded-sm my-1"
                                     >
                                         <Link
                                             href={`/${res.type}/${item.id}`}
@@ -146,14 +150,30 @@ export default function SearchBar({ market = "DK" }) {
                                                 setQuery("");
                                             }}
                                         >
-                                            <article className="flex flex-col">
-                                                <h3>{item.name}</h3>
-                                                
+                                            <article className="flex items-center gap-2">
+                                                {thumbnail ?
+                                                    (<Image
+                                                        src={thumbnail.url}
+                                                        alt={item.name}
+                                                        width={thumbnail.width || 64}
+                                                        height={thumbnail.height || 64}
+                                                        className="size-12 object-cover rounded-sm border border-white/10"
+                                                    />)
+                                                    :
+                                                    (<figure className="size-12 grid place-items-center rounded-sm border border-white/10 bg-iplay-plum">
+                                                        <FaMusic className="size-5 text-iplay-pink/33" />
+                                                    </figure>)
+                                                }
 
-                                                <small className="capitalize opacity-50">
-                                                    {res.type}
-                                                    {meta && <> • {meta}</>}
-                                                </small>
+                                                <hgroup className="flex flex-col">
+                                                    <h3>{item.name}</h3>
+                                                    <small className="capitalize opacity-50">
+                                                        {res.type}
+                                                        {meta && <> • {meta}</>}
+                                                    </small>
+                                                </hgroup>
+
+
                                             </article>
                                         </Link>
                                     </li>

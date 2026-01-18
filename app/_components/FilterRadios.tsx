@@ -17,7 +17,7 @@ export default function FilterRadios({
                 <label
                     key={opt}
                     className={`flex items-center justify-center px-2.5 p-0.5 text-xs rounded-full border-2 cursor-pointer
-                    ${value === opt ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-500 border-black/40"}
+                    ${value === opt ? "bg-iplay-orange text-white border-iplay-coral/25" : "bg-iplay-grape/50 text-iplay-white border-iplay-white/10"}
                     `}
                 >
                     <input
@@ -28,7 +28,7 @@ export default function FilterRadios({
                         onChange={() => onChange(opt)}
                         className="sr-only" // hides the input but keeps it accessible
                     />
-                    <span className="capitalize">{opt}</span>
+                    <span className="capitalize font-headline">{opt}</span>
                 </label>
             ))}
         </div>
