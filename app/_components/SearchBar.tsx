@@ -3,17 +3,26 @@
 import { useState, useMemo } from "react";
 import { debounce } from "lodash";
 import { fetchFromSpotify } from "../_lib/actions";
-import { FaMusic } from "react-icons/fa";
 
-import Link from "next/link";
-import Image from "next/image";
+import MusicItem from "./MusicItem";
 import FilterRadios from "./FilterRadios";
 import Fuse from "fuse.js";
 
+
+type SearchResult = {
+    type: "artist" | "album" | "track" | "playlist";
+    item:
+    | SpotifyApi.ArtistObjectFull
+    | SpotifyApi.AlbumObjectFull
+    | SpotifyApi.TrackObjectFull
+    | SpotifyApi.PlaylistObjectFull;
+};
+
+
 export default function SearchBar({ market = "DK" }) {
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<any[]>([]);
-    const [filter, setFilter] = useState("all"); // default radio
+    const [results, setResults] = useState<SearchResult[]>([]);
+    const [filter, setFilter] = useState("all");
 
 
     // Map radio value to Spotify types
@@ -32,17 +41,7 @@ export default function SearchBar({ market = "DK" }) {
         playlist: "playlists",
     };
 
-    function getResultMeta(res: any): string | null {
-        if (res.type === "album" || res.type === "track") {
-            return res.item.artists?.[0]?.name ?? null;
-        }
 
-        if (res.type === "playlist") {
-            return res.item.owner?.display_name ?? null;
-        }
-
-        return null;
-    }
 
     const debouncedSearch = useMemo(
         () =>
@@ -60,7 +59,7 @@ export default function SearchBar({ market = "DK" }) {
 
                 const normalized: any[] = [];
                 for (const type of types.split(",")) {
-                    const key = typeKeyMap[type] || type + "s";
+                    const key = type + "s";
                     const items = data[key]?.items;
                     if (items?.length) {
                         normalized.push(
@@ -106,7 +105,8 @@ export default function SearchBar({ market = "DK" }) {
             debouncedSearch(query, types);
         }
     }
-    //overflow-y-auto [overflow-y:overlay] [scrollbar-gutter:stable]
+
+
     return (
         <div className="relative w-full max-w-80">
             <input
@@ -133,52 +133,16 @@ export default function SearchBar({ market = "DK" }) {
                     <ul className="overflow-y-auto max-h-[calc(100vh-8rem)] px-2 pb-2">
                         {results
                             .filter((res) => res.item)
-                            .map((res) => {
-                                const item = res.item;
-                                const meta = getResultMeta(res);
-                                let thumbnail = res.type === "track" ? item.album.images[0] : item.images[0];
-
-                                return (
-                                    <li
-                                        key={`${res.type}-${item.id}`}
-                                        className="p-1 odd:bg-white/10 rounded-sm my-1"
-                                    >
-                                        <Link
-                                            href={`/${res.type}/${item.id}`}
-                                            onClick={() => {
-                                                setResults([]);
-                                                setQuery("");
-                                            }}
-                                        >
-                                            <article className="flex items-center gap-2">
-                                                {thumbnail ?
-                                                    (<Image
-                                                        src={thumbnail.url}
-                                                        alt={item.name}
-                                                        width={thumbnail.width || 64}
-                                                        height={thumbnail.height || 64}
-                                                        className="size-12 object-cover rounded-sm border border-white/10"
-                                                    />)
-                                                    :
-                                                    (<figure className="size-12 grid place-items-center rounded-sm border border-white/10 bg-iplay-plum">
-                                                        <FaMusic className="size-5 text-iplay-pink/33" />
-                                                    </figure>)
-                                                }
-
-                                                <hgroup className="flex flex-col">
-                                                    <h3 className="font-poppins">{item.name}</h3>
-                                                    <small className="font-dm-sans capitalize opacity-50">
-                                                        {res.type}
-                                                        {meta && <> • {meta}</>}
-                                                    </small>
-                                                </hgroup>
-
-
-                                            </article>
-                                        </Link>
-                                    </li>
-                                );
-                            })}
+                            .map((res) => (
+                                <MusicItem
+                                    key={`${res.type}-${res.item.id}`}
+                                    res={res}
+                                    onSelect={() => {
+                                        setResults([]);
+                                        setQuery("");
+                                    }}
+                                />
+                            ))}
                     </ul>
                 </div>
             )}
