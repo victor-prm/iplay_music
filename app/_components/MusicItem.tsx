@@ -50,7 +50,7 @@ export default function MusicItem({ res, onSelect }: MusicItemProps) {
             <h3 className="font-poppins">{item.name}</h3>
             <small className="font-dm-sans capitalize opacity-50">
               {res.type}
-              {meta && <> • {meta}</>}
+              {meta && <> • <span className="normal-case">{meta}</span></>}
             </small>
           </hgroup>
         </article>
