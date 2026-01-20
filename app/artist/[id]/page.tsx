@@ -1,10 +1,12 @@
 // app/artist/[id]/page.tsx
 /// <reference types="spotify-api" />
 
+import { AlbumFull, TrackFull, ArtistFull } from "@/types/spotify";
+
 import Image from "next/image";
 import Link from "next/link";
 import { getAllAlbumsForArtist, fetchFromSpotify } from "@/app/_lib/actions";
-import { AlbumFull, TrackFull, ArtistFull } from "@/types/spotify";
+
 
 interface ArtistPageProps {
     params: Promise<{ id: string }>;
@@ -15,23 +17,19 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
 
     if (!artistId) throw new Error("Artist ID is required");
 
-    // Fetch all full albums for the artist
     const albums: AlbumFull[] = await getAllAlbumsForArtist(artistId, ["album"]);
 
-    // Fetch artist info
-    const artistInfo: ArtistFull = await fetchFromSpotify(
+    const artistInfo:  ArtistFull  = await fetchFromSpotify(
         `https://api.spotify.com/v1/artists/${artistId}?market=DK`
     );
 
-    // Fetch top tracks
-    const topTracksUrl = `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=DK`;
-    const topTracksData: { tracks: SpotifyApi.TrackObjectFull[] } = await fetchFromSpotify(topTracksUrl);
+    const topTracksData: { tracks: TrackFull[] } = await fetchFromSpotify(
+        `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=DK`
+    );
     const topTracks: TrackFull[] = topTracksData.tracks || [];
-
 
     return (
         <div className="flex flex-col gap-8">
-            {/* Artist Image */}
             {artistInfo.images?.[0] && (
                 <Image
                     src={artistInfo.images[0].url}
@@ -42,10 +40,8 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
                 />
             )}
 
-            {/* Artist Name */}
             <h1 className="font-bold text-2xl">{artistInfo.name}</h1>
 
-            {/* Top Tracks */}
             {topTracks.length > 0 && (
                 <section>
                     <h2 className="font-bold text-xl mb-2">Top Tracks</h2>
@@ -59,7 +55,6 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
                 </section>
             )}
 
-            {/* Albums */}
             {albums.length > 0 && (
                 <section>
                     <h2 className="font-bold text-xl mb-2">Albums</h2>

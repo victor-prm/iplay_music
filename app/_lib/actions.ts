@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import { redirect } from "next/navigation";
 import { formatGenreQuery } from "../_utils/helpers";
 import { ArtistFull } from "@/types/spotify";
+import { normalizeImages } from "../_utils/helpers";
 
 export async function fetchFromSpotify(
     url: string,
@@ -173,49 +174,54 @@ export async function getAlbumTracks(albumId: string) {
     return discArray;
 }
 
-export async function getArtistsByName(names: string[], market = "DK") {
-    interface SpotifyArtist {
-        id: string;
-        name: string;
-        followers: { total: number };
-        popularity: number;
-        images?: { url: string; height: number; width: number }[];
-        genres?: string[];
-        [key: string]: any;
-    }
-
-    const results: SpotifyArtist[] = [];
+export async function getArtistsByName(
+    names: string[],
+    market = "DK"
+): Promise<ArtistFull[]> {
+    const results: ArtistFull[] = [];
 
     const promises = names.map(async (name) => {
         const data = (await fetchFromSpotify(
             `https://api.spotify.com/v1/search?q=${encodeURIComponent(name)}&type=artist&market=${market}&limit=5`,
             { revalidate: 3600 }
-        )) as { artists?: { items: SpotifyArtist[] } };
+        )) as { artists?: { items: any[] } };
 
-        if (data.artists?.items?.length) {
-            const normalizedQuery = name.toLowerCase();
+        if (!data.artists?.items?.length) return;
 
-            const nameMatches: SpotifyArtist[] = data.artists.items.filter(
-                (a) => a.name.toLowerCase().includes(normalizedQuery)
-            );
+        const normalizedQuery = name.toLowerCase();
 
-            const bestMatch: SpotifyArtist =
-                nameMatches.length > 0
-                    ? nameMatches.reduce((prev, curr) =>
-                        curr.followers.total > prev.followers.total ? curr : prev
-                    )
-                    : data.artists.items[0];
+        const nameMatches = data.artists.items.filter((a) =>
+            a.name.toLowerCase().includes(normalizedQuery)
+        );
 
-            results.push(bestMatch);
-        }
+        const bestMatch = nameMatches.length
+            ? nameMatches.reduce((prev, curr) =>
+                curr.followers.total > prev.followers.total ? curr : prev
+            )
+            : data.artists.items[0];
+
+        // Normalize into ArtistFull
+        const normalized: ArtistFull = {
+            ...bestMatch,
+            type: "artist",
+            href: `https://api.spotify.com/v1/artists/${bestMatch.id}`,
+            external_urls: { spotify: `https://open.spotify.com/artist/${bestMatch.id}` },
+            uri: `spotify:artist:${bestMatch.id}`,
+            followers: {
+                total: bestMatch.followers?.total ?? 0,
+                href: bestMatch.followers?.href ?? null,
+            },
+            genres: bestMatch.genres ?? [],
+            images: normalizeImages(bestMatch.images),
+        };
+
+        results.push(normalized);
     });
 
     await Promise.all(promises);
 
     // Deduplicate by id
-    const uniqueResults: SpotifyArtist[] = Array.from(
-        new Map(results.map((a) => [a.id, a])).values()
-    );
+    const uniqueResults = Array.from(new Map(results.map((a) => [a.id, a])).values());
 
     // Sort by popularity descending
     uniqueResults.sort((a, b) => b.popularity - a.popularity);
@@ -306,10 +312,6 @@ export async function getArtistsByGenre(
                 href: null,
             },
             genres: artist.genres ?? [],
-            images: artist.images?.map(img => ({
-                url: img.url,
-                height: img.height ?? undefined,
-                width: img.width ?? undefined,
-            })) ?? [],
+            images: normalizeImages(artist.images),
         }));
 }

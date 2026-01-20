@@ -2,10 +2,12 @@
 /// <reference types="spotify-api" />
 
 import Image from "next/image";
+import PopularityMeter from "@/app/_components/PopularityMeter";
 import { getArtistsByGenre } from "@/app/_lib/actions";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 import type { ArtistFull } from "@/types/spotify";
 import Link from "next/link";
+import { abbreviateNumber } from "@/app/_utils/helpers";
 
 interface GenrePageProps {
   params: { id: string } | Promise<{ id: string }>;
@@ -33,7 +35,8 @@ export default async function GenrePage({ params }: GenrePageProps) {
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {artists.map((artist) => (
-          <li key={artist.id} className="flex flex-col gap-2 border rounded-md p-2">
+          <li key={artist.id} className="flex flex-col gap-2 border border-iplay-white/10 rounded-md shadow-2xl/10 shadow-iplay-grape">
+            
             <Link href={`/artist/${artist.id}`}>
               {/* Artist Image */}
               {artist.images?.[0] && (
@@ -50,10 +53,10 @@ export default async function GenrePage({ params }: GenrePageProps) {
               )}
 
               {/* Artist Info */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 p-2">
                 <strong className="text-lg">{artist.name}</strong>
                 <span className="text-sm opacity-70">
-                  Followers: {artist.followers?.total ?? 0} • Popularity: {artist.popularity ?? 0}
+                  {abbreviateNumber(artist.followers?.total) ?? 0} followers • {(<PopularityMeter value={artist.popularity}/>)}
                 </span>
               </div>
             </Link>

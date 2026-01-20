@@ -6,3 +6,9 @@ export interface Disc {
   discNumber: number;
   tracks: SpotifyApi.TrackObjectFull[];
 }
+
+export interface ImageObject {
+  url: string;
+  height?: number; // optional to match Spotify data
+  width?: number;
+}
