@@ -11,7 +11,7 @@ interface TrackRowProps {
   highlighted?: boolean;
 }
 
-export default function TrackRow({ track, index, highlighted }: TrackRowProps) {
+export default function TrackItem({ track, index, highlighted }: TrackRowProps) {
   const ref = useRef<HTMLLIElement>(null);
 
   // scroll into view if highlighted

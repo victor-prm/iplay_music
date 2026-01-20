@@ -1,7 +1,7 @@
 // app/_components/TrackList.tsx
 "use client";
 
-import TrackRow from "./TrackRow";
+import TrackItem from "./TrackItem";
 
 interface Disc {
   discNumber: number;
@@ -23,7 +23,7 @@ export default function TrackList({ discs, highlightId }: TrackListProps) {
           )}
           <ul className="flex flex-col gap-1">
             {disc.tracks.map((track, i) => (
-              <TrackRow
+              <TrackItem
                 key={track.id}
                 track={track}
                 index={i + 1}
