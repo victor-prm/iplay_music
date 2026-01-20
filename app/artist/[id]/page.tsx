@@ -1,59 +1,79 @@
-import { getAllAlbumsForArtist, fetchFromSpotify } from "@/app/_lib/actions";
-import Link from "next/link";
-import Image from "next/image";
+// app/artist/[id]/page.tsx
+/// <reference types="spotify-api" />
 
-export default async function ArtistPage({ params }: { params: any }) {
-    // 🚨 Await params if they are a promise
+import Image from "next/image";
+import Link from "next/link";
+import { getAllAlbumsForArtist, fetchFromSpotify } from "@/app/_lib/actions";
+import { AlbumFull, TrackFull, ArtistFull } from "@/types/spotify";
+
+interface ArtistPageProps {
+    params: Promise<{ id: string }>;
+}
+
+export default async function ArtistPage({ params }: ArtistPageProps) {
     const { id: artistId } = await params;
 
-    if (!artistId) {
-        throw new Error("Artist ID is required");
-    }
+    if (!artistId) throw new Error("Artist ID is required");
 
-    // 1️⃣ Get all albums (only full albums)
-    const albums = await getAllAlbumsForArtist(artistId, ["album"]);
+    // Fetch all full albums for the artist
+    const albums: AlbumFull[] = await getAllAlbumsForArtist(artistId, ["album"]);
 
-    // 2️⃣ Get top tracks for this artist
-    const artistInfoUrl = `https://api.spotify.com/v1/artists/${artistId}?market=DK`;
-    const artistInfo: any = await fetchFromSpotify(artistInfoUrl);
-    console.log(artistInfo)
+    // Fetch artist info
+    const artistInfo: ArtistFull = await fetchFromSpotify(
+        `https://api.spotify.com/v1/artists/${artistId}?market=DK`
+    );
+
+    // Fetch top tracks
     const topTracksUrl = `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=DK`;
-    const topTracksData: any = await fetchFromSpotify(topTracksUrl);
-    const topTracks = topTracksData?.tracks || [];
+    const topTracksData: { tracks: SpotifyApi.TrackObjectFull[] } = await fetchFromSpotify(topTracksUrl);
+    const topTracks: TrackFull[] = topTracksData.tracks || [];
+
 
     return (
         <div className="flex flex-col gap-8">
-            <Image
-                src={artistInfo.images[0].url}
-                alt="hej"
-                width={artistInfo.images[0].width}
-                height={artistInfo.images[0].height}
-            />
+            {/* Artist Image */}
+            {artistInfo.images?.[0] && (
+                <Image
+                    src={artistInfo.images[0].url}
+                    alt={artistInfo.name}
+                    width={artistInfo.images[0].width}
+                    height={artistInfo.images[0].height}
+                    className="rounded-md"
+                />
+            )}
 
-            <h1 className="font-bold">{artistInfo.name}</h1>
+            {/* Artist Name */}
+            <h1 className="font-bold text-2xl">{artistInfo.name}</h1>
 
+            {/* Top Tracks */}
+            {topTracks.length > 0 && (
+                <section>
+                    <h2 className="font-bold text-xl mb-2">Top Tracks</h2>
+                    <ul className="flex flex-col gap-1">
+                        {topTracks.map((track) => (
+                            <li key={track.id}>
+                                {track.name} {track.album?.name && <>({track.album.name})</>}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
 
-            <section>
-                <h2 className="font-bold">Top Tracks</h2>
-                <ul>
-                    {topTracks.map((track: any) => (
-                        <li key={track.id}>
-                            {track.name} ({track.album?.name})
-                        </li>
-                    ))}
-                </ul>
-            </section>
-
-            <section>
-                <h2 className="font-bold">Albums</h2>
-                <ul>
-                    {albums.map((album: any) => (
-                        <li key={album.id}>
-                            <Link href={`/album/${album.id}`}>{album.name} ({album.release_date.substring(0, 4)})</Link>
-                        </li>
-                    ))}
-                </ul>
-            </section>
+            {/* Albums */}
+            {albums.length > 0 && (
+                <section>
+                    <h2 className="font-bold text-xl mb-2">Albums</h2>
+                    <ul className="flex flex-col gap-1">
+                        {albums.map((album) => (
+                            <li key={album.id}>
+                                <Link href={`/album/${album.id}`} className="hover:underline">
+                                    {album.name} ({album.release_date?.substring(0, 4)})
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
         </div>
     );
 }

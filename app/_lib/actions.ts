@@ -2,6 +2,7 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation";
 import { formatGenreQuery } from "../_utils/helpers";
+import { ArtistFull } from "@/types/spotify";
 
 export async function fetchFromSpotify(
     url: string,
@@ -241,8 +242,8 @@ export async function getArtistsByGenre(
     genreSlug: string,
     minResults = 10,
     market = "DK",
-    maxTries = 5 // maximum number of fetch attempts
-): Promise<SpotifyArtist[]> {
+    maxTries = 5
+): Promise<ArtistFull[]> {
     // Convert slug to a readable genre string
     const genreQuery = formatGenreQuery(genreSlug) // "heavy_metal" → "heavy metal"
     const limitPerPage = 20;
@@ -292,5 +293,23 @@ export async function getArtistsByGenre(
     // Sort by followers (most popular first)
     uniqueResults.sort((a, b) => (b.followers?.total ?? 0) - (a.followers?.total ?? 0));
 
-    return uniqueResults.slice(0, minResults);
+    return uniqueResults
+        .slice(0, minResults)
+        .map((artist): ArtistFull => ({
+            ...artist,
+            type: "artist",
+            href: `https://api.spotify.com/v1/artists/${artist.id}`,
+            external_urls: { spotify: `https://open.spotify.com/artist/${artist.id}` },
+            uri: `spotify:artist:${artist.id}`,
+            followers: {
+                total: artist.followers?.total ?? 0,
+                href: null,
+            },
+            genres: artist.genres ?? [],
+            images: artist.images?.map(img => ({
+                url: img.url,
+                height: img.height ?? undefined,
+                width: img.width ?? undefined,
+            })) ?? [],
+        }));
 }
