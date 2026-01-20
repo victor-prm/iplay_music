@@ -2,7 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["i.scdn.co", "mosaic.scdn.co", "image-cdn-ak.spotifycdn.com"], // whitelist Spotify images
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.spotifycdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.scdn.co",
+      },
+      {
+        protocol: "https",
+        hostname: "mosaic.scdn.co",
+      },
+    ],
   },
   allowedDevOrigins: ["127.0.0.1:3000"],
 };
