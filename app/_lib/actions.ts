@@ -153,9 +153,24 @@ export async function getAlbumTracks(albumId: string) {
         offset += limit;
     }
 
-    return allTracks;
-}
+    // group tracks by disc_number
+    const discs: Record<number, any[]> = {};
+    allTracks.forEach(track => {
+        const disc = track.disc_number || 1;
+        if (!discs[disc]) discs[disc] = [];
+        discs[disc].push(track);
+    });
 
+    // convert to array sorted by disc number
+    const discArray = Object.keys(discs)
+        .sort((a, b) => Number(a) - Number(b))
+        .map(discNum => ({
+            discNumber: Number(discNum),
+            tracks: discs[Number(discNum)],
+        }));
+
+    return discArray;
+}
 
 export async function getArtistsByName(names: string[], market = "DK") {
     interface SpotifyArtist {

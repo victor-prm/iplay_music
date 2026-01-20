@@ -1,38 +1,27 @@
+// app/album/[id]/page.tsx
 import { getAlbumTracks } from "@/app/_lib/actions";
+import TrackList from "@/app/_components/TrackList";
 
 export default async function AlbumPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ highlight?: string }>;
+  searchParams?: Promise<{ highlight?: string }>;
 }) {
   const { id: albumId } = await params;
-  const { highlight } = await searchParams;
+  const { highlight: highlightId } = searchParams ? await searchParams : { highlight: undefined };
 
-  const tracks = await getAlbumTracks(albumId);
+  if (!albumId) {
+    return <p>No album ID provided.</p>;
+  }
+
+  const discs = await getAlbumTracks(albumId); // now returns discs
 
   return (
     <div>
       <h1>Tracks for album {albumId}</h1>
-
-      <ul>
-        {tracks.map((track: any, i: number) => {
-          const isHighlighted = track.id === highlight;
-
-          return (
-            <li
-              key={track.id}
-              className={`p-2`}
-            >
-              <span className="opacity-50 w-6 inline-block text-right">
-                {i + 1}
-              </span>{" "}
-              <span className={isHighlighted ? "text-iplay-coral" : ""}>{track.name}</span>
-            </li>
-          );
-        })}
-      </ul>
+      <TrackList discs={discs} highlightId={highlightId} />
     </div>
   );
 }
