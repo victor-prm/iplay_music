@@ -33,7 +33,7 @@ export default function ArtistItem({ artist, href, className = "" }: ArtistItemP
       )}
 
       {/* Artist Info */}
-      <div className="flex flex-col gap-1 p-2">
+      <div className="flex flex-col gap-1 px-2 pb-4">
         <strong className="text-lg">{artist.name}</strong>
         <span className="text-sm opacity-70 flex items-center gap-2">
           {abbreviateNumber(artist.followers?.total) ?? 0} followers
