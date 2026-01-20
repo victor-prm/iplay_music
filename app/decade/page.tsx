@@ -1,37 +1,24 @@
+// app/artists/page.tsx
+import type { ArtistFull } from "@/types/spotify";
 import { getArtistsByName } from "@/app/_lib/actions";
-import { names1960s, names1970s, names1980s, names1990s, names2000s, names2010s, names2020s } from "../_data/static";
-import Image from "next/image";
+import { names1990s } from "../_data/static";
+import ArtistItem from "@/app/_components/ArtistItem";
 
-export default async function ArtistsPage() {
-    const decade_artists = names1990s
+export default async function CategoryPage() {
+  const decadeArtists: string[] = names1990s;
+  const artists: ArtistFull[] = await getArtistsByName(decadeArtists);
 
+  return (
+    <div className="flex flex-col gap-4">
+      <h1>Artists of the decade</h1>
 
-
-    const artists = await getArtistsByName(decade_artists);
-    console.log(artists);
-
-    return (
-        <div>
-            <h1>Artists of the decade</h1>
-            <ul>
-                {artists.map(artist => (
-                    <li key={artist.id}>
-                        <strong>{artist.name}</strong> — Followers: {artist.followers.total} — Popularity: {artist.popularity}
-                        {artist.images?.[0] && (
-                            <figure className="w-32 h-32">
-                                <Image
-                                    src={artist.images[0].url}
-                                    alt={artist.name}
-                                    width={256}
-                                    height={256}
-                                    className="w-full h-full object-cover"
-                                />
-                            </figure>
-
-                        )}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {artists.map((artist) => (
+          <li key={artist.id}>
+            <ArtistItem artist={artist} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
