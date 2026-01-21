@@ -7,6 +7,7 @@ import ArtistItem from "@/app/_components/ArtistItem";
 export default async function CategoryPage() {
   const decadeArtists: string[] = names1990s;
   const artists: ArtistFull[] = await getArtistsByName(decadeArtists);
+  console.log(artists)
 
   return (
     <div className="flex flex-col gap-4">

@@ -17,6 +17,8 @@ export default async function GenrePage({ params }: GenrePageProps) {
   const artists: ArtistFull[] = await getArtistsByGenre(genreSlug, 10);
   if (!artists?.length) return <p>No artists found for this genre.</p>;
 
+  console.log(artists);
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="capitalize font-bold text-2xl">{formatGenreQuery(genreSlug)}</h1>

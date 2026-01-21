@@ -207,3 +207,35 @@ export const names2020s = [
 ];
 
 console.assert(names2020s.length === 25, "2020s array must have 25 artists");
+
+
+
+export const myCategories = [
+  "Pop",
+  "Indie",
+  "Country",
+  "R&B",
+  "Rock",
+  "Latin",
+  "Ambient",
+  "Hip Hop",
+  "Reggae",
+  "Classical",
+  "Orchestral",
+  "Jazz",
+  "Folk",
+  "Techno",
+  "Heavy Metal",
+  "Blues",
+  "Classic Rock",
+  "Singer-Songwriter",
+  "Gospel",
+  "Alternative Rock",
+  "Rap",
+  "EDM",
+  "Children",
+  "Bluegrass",
+  "Americana",
+  "Big Band",
+  "Comedy",
+]

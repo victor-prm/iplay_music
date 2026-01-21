@@ -257,8 +257,6 @@ export async function getArtistsByGenre(
     let results: SpotifyArtist[] = [];
     let tries = 0;
 
-    console.log(genreQuery);
-
     while (results.length < minResults && tries < maxTries) {
         const data: any = await fetchFromSpotify(
             `https://api.spotify.com/v1/search?q=${encodeURIComponent(
