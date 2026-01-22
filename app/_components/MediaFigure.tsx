@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { FaMusic } from "react-icons/fa";
-import type { MediaImage } from "@/types/media";
+import type { MediaImage } from "@/types/components";
 
 interface MediaFigureProps {
   images?: MediaImage[];

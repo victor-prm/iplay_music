@@ -25,14 +25,15 @@ export interface MediaImage {
     height?: number;
 }
 
-export interface MediaCardProps {
-    images?: MediaImage[];
-    title: string;
-    meta?: React.ReactNode;
-    href?: string;
-    className?: string;
-    index?: number;
-}
+export type MediaCardProps = {
+  images?: MediaImage[];
+  meta?: React.ReactNode;
+  href?: string;
+  className?: string;
+} & (
+  | { loading: true; title?: string }      // skeleton mode
+  | { loading?: false; title: string }     // normal mode
+);
 
 // Filters
 export type FilterOptions = "all" | "artist" | "album" | "track" | "playlist";
@@ -66,4 +67,12 @@ export interface TrackRowProps {
 export interface TrackListProps {
   discs: Disc[];
   highlightId?: string;
+}
+
+
+export interface MediaImage {
+  url: string;
+  alt?: string;
+  width?: number;
+  height?: number;
 }

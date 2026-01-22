@@ -3,8 +3,8 @@
 import MediaCard from "./MediaCard";
 import PopularityMeter from "./PopularityMeter";
 import { abbreviateNumber } from "@/app/_utils/helpers";
-import type { ArtistItemProps } from "@/types/components";
-import type { MediaImage } from "@/types/media";
+import type { ArtistItemProps,  MediaImage } from "@/types/components";
+
 
 export default function ArtistItem({
   artist,
@@ -29,7 +29,6 @@ export default function ArtistItem({
       className={className}
       title={artist.name}
       images={images}
-      index={index}
       meta={
         <>
           {abbreviateNumber(artist.followers?.total) ?? 0} followers
