@@ -15,7 +15,7 @@ import Footer from "./_components/Footer";
 
 //Static fonts
 const poppins = Poppins({
-  weight: ["300", "700"],
+  weight: ["300", "600"],
   variable: "--font-poppins",
   subsets: ["latin"],
 });

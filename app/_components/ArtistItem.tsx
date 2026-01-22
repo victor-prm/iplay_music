@@ -9,9 +9,10 @@ interface ArtistItemProps {
   artist: ArtistFull;
   href?: string;
   className?: string;
+  index?: number
 }
 
-export default function ArtistItem({ artist, href, className }: ArtistItemProps) {
+export default function ArtistItem({ artist, href, className, index }: ArtistItemProps) {
   const image = artist.images?.[0];
 
   return (
@@ -35,6 +36,7 @@ export default function ArtistItem({ artist, href, className }: ArtistItemProps)
           <PopularityMeter value={artist.popularity} />
         </>
       }
+      index = {index}
     />
   );
 }

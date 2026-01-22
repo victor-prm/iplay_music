@@ -16,6 +16,7 @@ interface MediaCardProps {
     meta?: ReactNode;
     href?: string;
     className?: string;
+    index?: number;
 }
 
 export default function MediaCard({
@@ -24,10 +25,12 @@ export default function MediaCard({
     meta,
     href,
     className = "",
+    index = 0,
 }: MediaCardProps) {
     const content = (
         <div
-            className={`flex flex-col gap-2 border border-iplay-white/10 rounded-md shadow-2xl/10 shadow-iplay-grape overflow-hidden ${className}`}
+            className={`flex flex-col gap-2  border border-iplay-white/10 rounded-md shadow-2xl/10 shadow-iplay-grape overflow-hidden ${className}`}
+            style={{opacity: 0, animation: `300ms fade-in forwards ${String(25+index*25)}ms` }}
         >
             {/* Image */}
 
@@ -47,9 +50,9 @@ export default function MediaCard({
 
             {/* Content */}
             <div className="flex flex-col gap-1 px-2 pb-4">
-                <strong className="text-lg">{title}</strong>
+                <h2 className="text-md font-poppins font-bold">{title}</h2>
                 {meta && (
-                    <div className="text-sm opacity-70 flex flex-wrap items-center gap-2">
+                    <div className="text-sm opacity-70 flex flex-wrap items-center gap-2 font-dm-sans">
                         {meta}
                     </div>
                 )}

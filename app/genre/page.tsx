@@ -28,8 +28,11 @@ export default async function GenreOverviewPage() {
             <h1 className="font-bold text-2xl">Popular Genres</h1>
 
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {genrePreviews.map((genre) => (
-                    <li key={genre.name} className="block rounded-md border border-iplay-white/10 hover:bg-iplay-white/5 transition overflow-clip">
+                {genrePreviews.map((genre, i) => (
+                    <li key={genre.name}
+                        className="block rounded-md border border-iplay-white/10 hover:bg-iplay-white/5 transition overflow-clip"
+                        style={{ opacity: 0, animation: `300ms fade-in forwards ${String(25 + i * 25)}ms` }}
+                    >
                         <Link
                             href={`/genre/${genre.name.replaceAll(" ", "_")}`}
                         >

@@ -25,9 +25,9 @@ export default async function GenrePage({ params }: GenrePageProps) {
       <p>Showing {artists.length} result{artists.length > 1 ? "s" : ""}</p>
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {artists.map((artist) => (
+        {artists.map((artist, i) => (
           <li key={artist.id}>
-            <ArtistItem artist={artist} href={`/artist/${artist.id}`} />
+            <ArtistItem artist={artist} href={`/artist/${artist.id}`} index={i}/>
           </li>
         ))}
       </ul>
