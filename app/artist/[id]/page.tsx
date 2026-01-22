@@ -5,7 +5,7 @@ import { AlbumFull, TrackFull, ArtistFull } from "@/types/spotify";
 
 import Image from "next/image";
 import Link from "next/link";
-import { getAllAlbumsForArtist, fetchFromSpotify } from "@/app/_lib/actions";
+import { getAllAlbumsForArtist, fetchFromSpotify } from "@/app/_lib/dal";
 
 
 interface ArtistPageProps {

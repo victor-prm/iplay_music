@@ -1,6 +1,6 @@
 // app/artists/page.tsx
 import type { ArtistFull } from "@/types/spotify";
-import { getArtistsByName } from "@/app/_lib/actions";
+import { getArtistsByName } from "../_lib/dal";
 import { names1990s } from "../_data/static";
 import ArtistItem from "@/app/_components/ArtistItem";
 

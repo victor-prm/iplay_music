@@ -1,6 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { myCategories } from "../_data/static";
-import { getArtistsByGenre } from "../_lib/actions";
+import { getArtistsByGenre } from "../_lib/dal";
 
 interface GenrePreview {
     name: string;
@@ -27,7 +28,7 @@ export default async function GenreOverviewPage() {
         <div className="flex flex-col gap-4">
             <h1 className="font-bold text-2xl">Popular Genres</h1>
 
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
                 {genrePreviews.map((genre, i) => (
                     <li key={genre.name}
                         className="block rounded-md border border-iplay-white/10 hover:bg-iplay-white/5 transition overflow-clip"
@@ -39,11 +40,13 @@ export default async function GenreOverviewPage() {
                             {/* Artist thumbnails */}
                             <div className="grid grid-cols-3">
                                 {genre.thumbnails.map((src, i) => (
-                                    <img
+                                    <Image
                                         key={i}
                                         src={src}
-                                        alt=""
-                                        className="aspect-square object-cover"
+                                        alt={src}
+                                        className="aspect-square size-full object-cover"
+                                        width={160}
+                                        height={160}
                                     />
                                 ))}
                             </div>

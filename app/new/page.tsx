@@ -1,6 +1,6 @@
 /// <reference types="spotify-api" />
 
-import { fetchFromSpotify } from "@/app/_lib/actions";
+import { fetchFromSpotify } from "../_lib/dal";
 import AlbumItem from "@/app/_components/AlbumItem";
 
 interface NewReleasesResponse {
@@ -20,7 +20,7 @@ export default async function NewReleasePage() {
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">New Releases</h1>
 
-      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
         {albums.map((album) => (
           <li key={album.id}>
             <AlbumItem

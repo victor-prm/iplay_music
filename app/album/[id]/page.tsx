@@ -1,4 +1,4 @@
-import { getAlbumTracks } from "@/app/_lib/actions";
+import { getAlbumTracks } from "@/app/_lib/dal";
 import TrackList from "@/app/_components/TrackList";
 import type { Disc } from "@/types/spotify";
 

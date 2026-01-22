@@ -2,7 +2,7 @@
 /// <reference types="spotify-api" />
 
 import type { ArtistFull } from "@/types/spotify";
-import { getArtistsByGenre } from "@/app/_lib/actions";
+import { getArtistsByGenre } from "@/app/_lib/dal";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 import ArtistItem from "@/app/_components/ArtistItem";
 
@@ -24,7 +24,7 @@ export default async function GenrePage({ params }: GenrePageProps) {
       <h1 className="capitalize font-bold text-2xl">{formatGenreQuery(genreSlug)}</h1>
       <p>Showing {artists.length} result{artists.length > 1 ? "s" : ""}</p>
 
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
         {artists.map((artist, i) => (
           <li key={artist.id}>
             <ArtistItem artist={artist} href={`/artist/${artist.id}`} index={i}/>

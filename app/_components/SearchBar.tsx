@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { debounce } from "lodash";
-import { fetchFromSpotify } from "../_lib/actions";
+import { fetchFromSpotify } from "../_lib/dal";
 
 import MusicItem from "./MusicItem";
 import FilterRadios from "./FilterRadios";
