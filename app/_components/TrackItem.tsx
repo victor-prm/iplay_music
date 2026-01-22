@@ -49,7 +49,7 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
       <div className="flex flex-col">
         <span>{track.name}</span>
         <small className="opacity-50">
-          {track.artists?.map((a: any) => a.name).join(", ")}
+          {track.artists?.map((a: any) => a.name).join(" • ")}
         </small>
       </div>
     </li>

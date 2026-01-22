@@ -12,7 +12,7 @@ interface GenrePreview {
 export default async function GenreOverviewPage() {
     const genrePreviews: GenrePreview[] = await Promise.all(
         myCategories.map(async (cat) => {
-            const artists = await getArtistsByGenre(cat, 3);
+            const artists = await getArtistsByGenre(cat, 4);
 
             return {
                 name: cat,
@@ -29,10 +29,9 @@ export default async function GenreOverviewPage() {
             <h1 className="font-bold text-2xl">Popular Genres</h1>
 
             <ul className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-                {genrePreviews.map((genre, i) => (
+                {genrePreviews.map((genre) => (
                     <li key={genre.name}
                         className="block rounded-md border border-iplay-white/10 hover:bg-iplay-white/5 transition overflow-clip"
-                        style={{ opacity: 0, animation: `300ms fade-in forwards ${String(25 + i * 25)}ms` }}
                     >
                         <Link
                             href={`/genre/${genre.name.replaceAll(" ", "_")}`}

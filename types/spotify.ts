@@ -9,6 +9,6 @@ export interface Disc {
 
 export interface ImageObject {
   url: string;
-  height?: number; // optional to match Spotify data
+  height?: number;
   width?: number;
 }

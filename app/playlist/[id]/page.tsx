@@ -1,4 +1,4 @@
-import { fetchFromSpotify } from "@/app/_lib/actions";
+import { fetchFromSpotify } from "@/app/_lib/dal";
 import Image from "next/image";
 
 type PlaylistLite = {
@@ -98,7 +98,7 @@ export default async function PlaylistPage({
                         <div>
                             <div>{track.name}</div>
                             <small className="opacity-60">
-                                {track.artists.join(", ")}
+                                {track.artists.join(" • ")}
                             </small>
                         </div>
                     </li>

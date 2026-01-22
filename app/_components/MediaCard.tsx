@@ -1,26 +1,9 @@
-"use client";
-
-import Image from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
-import { FaMusic } from "react-icons/fa";
-
-interface MediaCardProps {
-    image?: {
-        url: string;
-        width?: number | null;
-        height?: number | null;
-        alt: string;
-    };
-    title: string;
-    meta?: ReactNode;
-    href?: string;
-    className?: string;
-    index?: number;
-}
+import { MediaFigure } from "./MediaFigure";
+import type { MediaCardProps } from "@/types/media";
 
 export default function MediaCard({
-    image,
+    images,
     title,
     meta,
     href,
@@ -29,26 +12,12 @@ export default function MediaCard({
 }: MediaCardProps) {
     const content = (
         <div
-            className={`flex flex-col gap-2  border border-iplay-white/10 rounded-md shadow-2xl/10 shadow-iplay-grape overflow-hidden ${className}`}
-            style={{opacity: 0, animation: `300ms fade-in forwards ${String(25+index*25)}ms` }}
+            className={`flex flex-col gap-2 border border-iplay-white/10 rounded-md shadow-2xl/10 shadow-iplay-grape overflow-hidden ${className}`}
         >
-            {/* Image */}
-
-            <figure className="flex items-center justify-center w-full aspect-square overflow-hidden border-b border-iplay-white/10">
-                {image ? (
-                    <Image
-                        src={image.url}
-                        alt={image.alt}
-                        width={image.width ?? 512}
-                        height={image.height ?? 512}
-                        className="object-cover w-full h-full"
-                        loading="lazy"
-                    />) :
-                    (<FaMusic className="size-[33%] text-iplay-grape/50"></FaMusic>)}
+            <figure className="w-full aspect-square overflow-hidden border-b border-iplay-white/10">
+                <MediaFigure images={images} />
             </figure>
 
-
-            {/* Content */}
             <div className="flex flex-col gap-1 px-2 pb-4">
                 <h2 className="text-md font-poppins font-bold">{title}</h2>
                 {meta && (
