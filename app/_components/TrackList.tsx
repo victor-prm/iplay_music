@@ -1,28 +1,20 @@
-// app/_components/TrackList.tsx
 "use client";
 
 import TrackItem from "./TrackItem";
+import type { TrackFull } from "@/types/spotify";
+import type { TrackListProps } from "@/types/components";
 
-interface Disc {
-  discNumber: number;
-  tracks: any[];
-}
-
-interface TrackListProps {
-  discs: Disc[];
-  highlightId?: string;
-}
 
 export default function TrackList({ discs, highlightId }: TrackListProps) {
   return (
     <div className="flex flex-col gap-4">
-      {discs.map(disc => (
+      {discs.map((disc) => (
         <div key={disc.discNumber}>
           {discs.length > 1 && (
             <h3 className="text-sm font-semibold mb-1">Disc {disc.discNumber}</h3>
           )}
           <ul className="flex flex-col gap-1">
-            {disc.tracks.map((track, i) => (
+            {disc.tracks.map((track: TrackFull, i: number) => (
               <TrackItem
                 key={track.id}
                 track={track}

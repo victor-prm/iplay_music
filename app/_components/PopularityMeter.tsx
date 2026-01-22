@@ -1,8 +1,4 @@
-interface PopularityMeterProps {
-    value: number; // 0-100
-}
-
-export default function PopularityMeter({ value }: PopularityMeterProps) {
+export default function PopularityMeter({ value }: {value: number}) {
     // Clamp value to 0-100
     const clamped = Math.min(Math.max(value, 0), 100);
 

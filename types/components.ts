@@ -1,6 +1,6 @@
 /// <reference types="spotify-api" />
 
-import type { ArtistFull, AlbumFull } from "./spotify";
+import type { ArtistFull, AlbumFull, TrackFull, PlaylistFull, Disc} from "@/types/spotify";
 
 // ArtistItem props
 export interface ArtistItemProps {
@@ -46,11 +46,24 @@ export interface FilterRadiosProps {
 // Search
 export type SearchResultType = "artist" | "album" | "track" | "playlist";
 
-export interface SearchResult {
-    type: SearchResultType;
-    item:
-    | SpotifyApi.ArtistObjectFull
-    | SpotifyApi.AlbumObjectFull
-    | SpotifyApi.TrackObjectFull
-    | SpotifyApi.PlaylistObjectFull;
+export type SearchResult =
+  | { type: "artist"; item: ArtistFull }
+  | { type: "album"; item: AlbumFull }
+  | { type: "track"; item: TrackFull }
+  | { type: "playlist"; item: PlaylistFull };
+
+export interface MusicItemProps {
+    res: SearchResult;
+    onSelect: () => void;
+}
+
+export interface TrackRowProps {
+  track: TrackFull;
+  index?: number;
+  highlighted?: boolean;
+}
+
+export interface TrackListProps {
+  discs: Disc[];
+  highlightId?: string;
 }

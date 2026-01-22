@@ -5,15 +5,19 @@ import { debounce } from "lodash";
 import Fuse from "fuse.js";
 import { fetchFromSpotify } from "../dal";
 import type { FilterOptions, SearchResult } from "@/types/components";
+import type { UseSpotifySearchProps } from "@/types/hooks";
+import type { ArtistFull, AlbumFull, TrackFull, PlaylistFull } from "@/types/spotify";
 
-
-interface UseSpotifySearchProps {
-    market?: string;
-    debounceMs?: number;
-}
 
 export function useSpotifySearch({ market = "DK", debounceMs = 300 }: UseSpotifySearchProps = {}) {
     const [results, setResults] = useState<SearchResult[]>([]);
+
+    const typeMap = {
+        artist: (item: any) => item as ArtistFull,
+        album: (item: any) => item as AlbumFull,
+        track: (item: any) => item as TrackFull,
+        playlist: (item: any) => item as PlaylistFull,
+    } as const;
 
     // Debounced search function
     const search = useMemo(
@@ -32,16 +36,19 @@ export function useSpotifySearch({ market = "DK", debounceMs = 300 }: UseSpotify
 
                 const normalized: SearchResult[] = [];
 
-                for (const type of types.split(",")) {
-                    const key = type + "s"; // e.g., artists, albums
+                for (const type of types.split(",") as Exclude<FilterOptions, "all">[]) {
+                    const key = type + "s";
                     const items = data[key]?.items as any[] | undefined;
                     if (!items?.length) continue;
 
-                    normalized.push(
-                        ...items
-                            .filter((item) => item?.id)
-                            .map((item) => ({ type: type as Exclude<FilterOptions, "all">, item }))
-                    );
+                    items
+                        .filter((item) => item?.id)
+                        .forEach((item) => {
+                            normalized.push({
+                                type,
+                                item: typeMap[type](item),
+                            } as SearchResult); // assert it’s a valid union member
+                        });
                 }
 
                 // Deduplicate
@@ -57,11 +64,11 @@ export function useSpotifySearch({ market = "DK", debounceMs = 300 }: UseSpotify
                 const fuse = new Fuse(uniqueResults, { keys: ["item.name"], threshold: 0.7 });
                 const bestMatches: SearchResult[] = fuse
                     .search(query)
-                    .map((r) => ({
-                        type: r.item.type,
-                        item: r.item.item,
-                    }));
-
+                    .map((r) => {
+                        const type = r.item.type as Exclude<FilterOptions, "all">;
+                        const castItem = typeMap[type](r.item.item);
+                        return { type, item: castItem } as SearchResult;
+                    });
                 setResults(bestMatches.slice(0, 10));
             }, debounceMs),
         [market, debounceMs]
