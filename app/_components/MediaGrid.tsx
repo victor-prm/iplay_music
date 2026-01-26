@@ -30,7 +30,7 @@ export default async function MediaGrid() {
                 <span className="opacity-50"> etc.</span>
               </span>
             }
-            href={`/genre/${genre.name.replaceAll(" ", "_")}`}
+            href={`/genre/${genre.name.replaceAll(" ", "_").toLocaleLowerCase()}`}
           />
         </li>
       ))}

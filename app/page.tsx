@@ -70,7 +70,7 @@ export default async function Home() {
   const data = await getFilteredPlaylists(searchResults, 20, 10);
 
   //console.log(data);
-  console.log(searchData.artists.items)
+ /*  console.log(searchData.artists.items) */
 
   return <h1>Home</h1>;
 }
