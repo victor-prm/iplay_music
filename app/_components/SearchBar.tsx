@@ -43,7 +43,7 @@ export default function SearchBar({ market = "DK" }: SearchBarProps) {
   return (
     <div className="relative w-full max-w-80">
       <input
-        className="bg-iplay-plum px-2 py-1 w-full rounded-sm placeholder-iplay-white/25 font-dm-sans"
+        className="bg-iplay-plum/50 px-2 py-1 w-full rounded-sm placeholder-iplay-white/25 font-dm-sans border border-iplay-grape/25"
         type="text"
         placeholder="Search"
         value={query}
