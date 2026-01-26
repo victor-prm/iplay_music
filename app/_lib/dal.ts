@@ -13,7 +13,9 @@ export async function fetchFromSpotify(
     const token = cookieStore.get("IPM_access_token");
 
     if (!token) {
-        redirect("/login");
+        /* redirect("/login"); */
+        console.log("Redirected from Fetch")
+        return;
     }
 
     const response = await fetch(url, {
