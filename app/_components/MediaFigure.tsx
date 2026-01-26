@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { FaMusic } from "react-icons/fa";
+import ThumbnailFallback from "./ThumbnailFallback";
 import type { MediaImage } from "@/types/components";
 
 interface MediaFigureProps {
@@ -9,9 +9,7 @@ interface MediaFigureProps {
 export function MediaFigure({ images }: MediaFigureProps) {
   if (!images || images.length === 0) {
     return (
-      <div className="flex items-center justify-center w-full h-full">
-        <FaMusic className="size-[33%] text-iplay-grape/50" />
-      </div>
+      <ThumbnailFallback />
     );
   }
 

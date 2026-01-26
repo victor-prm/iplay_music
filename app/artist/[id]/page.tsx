@@ -23,6 +23,8 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
         `https://api.spotify.com/v1/artists/${artistId}?market=DK`
     );
 
+    console.log(artistInfo)
+
     const topTracksData: { tracks: TrackFull[] } = await fetchFromSpotify(
         `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=DK`
     );

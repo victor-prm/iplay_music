@@ -7,6 +7,9 @@ import MusicItem from "./MusicItem";
 import FilterRadios from "./FilterRadios";
 import { useSpotifySearch } from "../_lib/hooks/useSpotifySearch";
 
+import { FaSearch } from "react-icons/fa";
+
+
 interface SearchBarProps {
   market?: string;
 }
@@ -42,14 +45,17 @@ export default function SearchBar({ market = "DK" }: SearchBarProps) {
 
   return (
     <div className="relative w-full max-w-80">
+      <FaSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-iplay-white/40 pointer-events-none" />
+
+      {/* Input */}
       <input
-        className="bg-iplay-plum/50 px-2 py-1 w-full rounded-sm placeholder-iplay-white/25 font-dm-sans border border-iplay-grape/25"
         type="text"
-        placeholder="Search"
         value={query}
         onChange={handleChange}
         id="search-field"
         name="search-field"
+        className="bg-iplay-grape/20 pl-8 py-0.5 w-full rounded-sm font-dm-sans border border-iplay-grape/25 placeholder-iplay-white/40"
+        placeholder="Search" // still text
       />
 
       {results.length > 0 && (
