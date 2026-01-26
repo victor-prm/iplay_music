@@ -1,42 +1,81 @@
-// proxy.ts
 import { NextRequest, NextResponse } from "next/server";
 
-export default function proxy(request: NextRequest) {
-    const token = request.cookies.get("IPM_access_token");
+export default async function proxy(request: NextRequest) {
+    const accessToken = request.cookies.get("IPM_access_token");
+    const refreshToken = request.cookies.get("IPM_refresh_token");
     const { pathname, search } = request.nextUrl;
 
-    // 1. Skip internal assets
-    const isInternal =
-        pathname.startsWith('/_next') ||
-        pathname.includes('/api/') ||
-        pathname.includes('.') || 
-        pathname.startsWith('/.well-known');
+    // 1. REFRESH LOGIC: No access token, but we have a refresh token
+    if (!accessToken && refreshToken) {
+        try {
+            const response = await fetch("https://accounts.spotify.com/api/token", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Authorization: `Basic ${Buffer.from(
+                        `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
+                    ).toString("base64")}`,
+                },
+                body: new URLSearchParams({
+                    grant_type: "refresh_token",
+                    refresh_token: refreshToken.value,
+                }),
+            });
 
-    const isLoginPage = pathname === "/login";
+            const data = await response.json();
 
-    // 2. Auth Logic
-    if (!token && !isInternal && !isLoginPage) {
-        // HARDCODE the base from ENV. Do not trust request.url.
+            if (response.ok) {
+                console.log("🔄 Access Token refreshed successfully");
+                
+                // Continue to the requested page
+                const nextResponse = NextResponse.next();
+
+                // Set the new access token in the cookies
+                nextResponse.cookies.set("IPM_access_token", data.access_token, {
+                    maxAge: data.expires_in,
+                    path: "/",
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: "lax",
+                });
+
+                // Spotify sometimes sends a NEW refresh token; update if so
+                if (data.refresh_token) {
+                    nextResponse.cookies.set("IPM_refresh_token", data.refresh_token, {
+                        maxAge: 60 * 60 * 24 * 30,
+                        path: "/",
+                        httpOnly: true,
+                        secure: false,
+                        sameSite: "lax",
+                    });
+                }
+
+                return nextResponse;
+            }
+        } catch (error) {
+            console.error("❌ Failed to refresh Spotify token:", error);
+            // Fall through to the redirect logic below if refresh fails
+        }
+    }
+
+    // 2. REDIRECT LOGIC: Totally logged out (no tokens)
+    if (!accessToken) {
         const baseUrl = process.env.BASE_URL || "http://127.0.0.1:3000";
-        const loginUrl = new URL("/login", baseUrl);
+        const loginUrl = `${baseUrl}/login`;
         
-        console.log(`🚫 Redirecting to: ${loginUrl.toString()}`);
         const response = NextResponse.redirect(loginUrl);
-
         response.cookies.set({
             name: "login_from",
             value: pathname + search,
             path: "/",
             httpOnly: true,
             sameSite: "lax",
-            secure: false, // Force false for IP-based dev
+            secure: false,
         });
 
         return response;
     }
 
-    // 3. IMPORTANT: You must return NextResponse.next() 
-    // or the page will hang/404 if the user IS logged in!
     return NextResponse.next();
 }
 
