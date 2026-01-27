@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import ThumbnailFallback from "./ThumbnailFallback";
+import MediaFigureFallback from "./ MediaFigureFallback";
 import type { SearchResult } from "@/types/components";
 import { MusicItemProps } from "@/types/components";
 
@@ -27,7 +27,7 @@ export default function MusicItem({ res, onSelect }: MusicItemProps) {
               className="size-12 object-cover rounded-sm border border-white/10"
             />
           ) : (
-            <ThumbnailFallback />
+            <MediaFigureFallback />
           )}
 
           <hgroup className="flex flex-col">

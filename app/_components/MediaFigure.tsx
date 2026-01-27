@@ -1,5 +1,5 @@
 import Image from "next/image";
-import ThumbnailFallback from "./ThumbnailFallback";
+import MediaFigureFallback from "./ MediaFigureFallback";
 import type { MediaImage } from "@/types/components";
 
 interface MediaFigureProps {
@@ -9,7 +9,7 @@ interface MediaFigureProps {
 export function MediaFigure({ images }: MediaFigureProps) {
   if (!images || images.length === 0) {
     return (
-      <ThumbnailFallback />
+      <MediaFigureFallback />
     );
   }
 
