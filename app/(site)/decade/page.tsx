@@ -1,7 +1,7 @@
 // app/artists/page.tsx
 import type { ArtistFull } from "@/types/spotify";
-import { getArtistsByName } from "../_lib/dal";
-import { names1990s } from "../_data/static";
+import { getArtistsByName } from "@/app/_lib/dal";
+import { names1990s } from "@/app/_data/static";
 import ArtistItem from "@/app/_components/ArtistItem";
 
 export default async function CategoryPage() {

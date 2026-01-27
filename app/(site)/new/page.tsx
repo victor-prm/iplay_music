@@ -1,6 +1,6 @@
 /// <reference types="spotify-api" />
 
-import { fetchFromSpotify } from "../_lib/dal";
+import { fetchFromSpotify } from "@/app/_lib/dal";
 import AlbumItem from "@/app/_components/AlbumItem";
 
 interface NewReleasesResponse {

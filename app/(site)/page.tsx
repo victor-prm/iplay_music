@@ -1,5 +1,4 @@
-import { fetchFromSpotify, getFilteredPlaylists } from "./_lib/dal";
-import { buildGenreQuery } from "./_utils/helpers";
+import { fetchFromSpotify, getFilteredPlaylists } from "@/app/_lib/dal";
 
 export default async function Home() {
 
