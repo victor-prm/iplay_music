@@ -1,19 +1,14 @@
+// app/_components/sections/RecentSection.tsx
 import { fetchFromSpotify, getArtistsByName } from "@/app/_lib/dal";
 import MediaCard from "@/app/_components/MediaCard";
 
-interface NewReleasesResponse {
-  albums?: {
-    items: SpotifyApi.AlbumObjectSimplified[];
-  };
-}
-
 export default async function RecentSection() {
-  // 1️⃣ Fetch new releases
-  const data = (await fetchFromSpotify(
+  // 1️⃣ Fetch new releases using Spotify's search endpoint
+  const data = await fetchFromSpotify(
     "https://api.spotify.com/v1/search?q=tag:new&type=album&limit=50&market=DK"
-  )) as NewReleasesResponse;
+  ) as { albums: { items: SpotifyApi.AlbumObjectSimplified[] } }; // just inline type
 
-  const albums = data.albums?.items ?? [];
+  const albums: SpotifyApi.AlbumObjectSimplified[] = data.albums?.items ?? [];
 
   // 2️⃣ Fetch first artist popularity
   const firstArtistNames = albums.map(a => a.artists[0].name);
@@ -38,7 +33,6 @@ export default async function RecentSection() {
     if (!existing) {
       dedupedMap[key] = album;
     } else {
-      // Compare release dates
       const existingDate = new Date(existing.release_date);
       const currentDate = new Date(album.release_date);
 
@@ -62,9 +56,9 @@ export default async function RecentSection() {
               title={album.name}
               images={[
                 {
-                  url: album.images[0].url,
-                  width: album.images[0].width,
-                  height: album.images[0].height,
+                  url: album.images[0]?.url ?? "",
+                  width: album.images[0]?.width,
+                  height: album.images[0]?.height,
                   alt: `Album cover for ${album.name}`,
                 },
               ]}
