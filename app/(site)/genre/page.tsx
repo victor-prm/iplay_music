@@ -1,8 +1,8 @@
 // app/genre-overview/page.tsx (Server Component)
-import { myCategories } from "../_data/static";
+import { myCategories } from "@/app/_data/static";
 import { Suspense } from "react";
-import MediaGrid from "../_components/MediaGrid";
-import MediaGridSkeleton from "../_components/MediaGridSkeleton";
+import MediaGrid from "@/app/_components/MediaGrid";
+import MediaGridSkeleton from "@/app/_components/MediaGridSkeleton";
 
 export default function GenreOverviewPage() {
   return (
