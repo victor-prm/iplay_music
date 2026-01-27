@@ -1,5 +1,5 @@
 import { fetchFromSpotify, getArtistsByName } from "@/app/_lib/dal";
-import AlbumItem from "@/app/_components/AlbumItem";
+import MediaCard from "@/app/_components/MediaCard";
 
 interface NewReleasesResponse {
   albums?: {
@@ -50,18 +50,16 @@ export default async function RecentSection() {
 
   filteredAlbums = Object.values(dedupedMap);
 
-  console.log(filteredAlbums)
-
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">New Releases</h1>
 
       <ul className="grid grid-flow-col auto-cols-[240px] gap-4 overflow-x-auto pb-4">
-        {filteredAlbums.map((album) => (
+        {filteredAlbums.map(album => (
           <li key={album.id}>
-            <AlbumItem
-              album={album}
+            <MediaCard
               href={`/album/${album.id}`}
+              title={album.name}
               images={[
                 {
                   url: album.images[0].url,
@@ -70,6 +68,7 @@ export default async function RecentSection() {
                   alt: `Album cover for ${album.name}`,
                 },
               ]}
+              meta={album.artists.map(a => a.name).join(" • ")}
             />
           </li>
         ))}

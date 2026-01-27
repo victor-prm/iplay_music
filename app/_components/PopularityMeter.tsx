@@ -1,4 +1,4 @@
-export default function PopularityMeter({ value }: {value: number}) {
+export default function PopularityMeter({ value }: { value: number }) {
     // Clamp value to 0-100
     const clamped = Math.min(Math.max(value, 0), 100);
 
@@ -21,23 +21,22 @@ export default function PopularityMeter({ value }: {value: number}) {
 
     // Only add shadow for lime, teal, blue
     let shadow = 'none';
-    if (color === 'var(--color-iplay-lime)') shadow = '0 0 2px ' + color;
-    else if (color === 'var(--color-iplay-teal)') shadow = '0 0 6px ' + color;
-    else if (color === 'var(--color-iplay-white)') shadow = '0 0 8px ' + color;
+    if (color === 'var(--color-iplay-lime)') shadow = '0 0 4px ' + color;
+    else if (color === 'var(--color-iplay-teal)') shadow = '0 0 8px ' + color;
+    else if (color === 'var(--color-iplay-white)') shadow = '0 0 16px ' + color;
 
     return (
-        <div
-            className="bg-iplay-white/20 rounded-4xl w-16 h-2 overflow-hidden inline-block"
-            style={{ boxShadow: shadow }}
-        >
-            <div
-                className="h-full rounded-4xl transition-all duration-300"
+        <>
+            {clamped > 70 ? (<div
+                className="ml-auto mr-2 rounded-4xl size-3 overflow-hidden inline-block"
                 style={{
-                    width: `${clamped}%`,
                     backgroundColor: color,
                     boxShadow: shadow,
                 }}
-            />
-        </div>
+            ></div>) : null
+            }
+        </>
+
+
     );
 }

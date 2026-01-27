@@ -1,7 +1,7 @@
 "use client";
 
-import MediaCard from "./MediaCard";
-import PopularityMeter from "./PopularityMeter";
+import MediaCard from "../MediaCard";
+import PopularityMeter from "../PopularityMeter";
 import { abbreviateNumber } from "@/app/_utils/helpers";
 import type { ArtistItemProps,  MediaImage } from "@/types/components";
 
