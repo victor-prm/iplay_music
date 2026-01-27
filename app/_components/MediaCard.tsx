@@ -30,7 +30,7 @@ export default function MediaCard({
       </figure>
 
       <div className="flex flex-col gap-1 px-2 pb-4">
-        <h2 className="text-md font-poppins font-bold">{title}</h2>
+        <h2 className="text-md font-poppins font-bold line-clamp-1">{title}</h2>
         {meta && (
           <div className="text-sm opacity-70 flex flex-wrap items-center gap-2 font-dm-sans">
             {meta}

@@ -2,17 +2,13 @@
 
 import MediaCard from "./MediaCard";
 import type { AlbumItemProps } from "@/types/components";
-import type { MediaImage } from "@/types/media";
 
-export default function AlbumItem({ album, href, className }: AlbumItemProps) {
-  const images: MediaImage[] =
-    album.images?.map((img) => ({
-      url: img.url,
-      width: img.width ?? undefined,
-      height: img.height ?? undefined,
-      alt: `Album cover for ${album.name}`,
-    })) ?? [];
-
+export default function AlbumItem({
+  album,
+  href,
+  className,
+  images,
+}: AlbumItemProps) {
   return (
     <MediaCard
       href={href}

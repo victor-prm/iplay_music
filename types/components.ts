@@ -1,28 +1,29 @@
 /// <reference types="spotify-api" />
 
-import type { ArtistFull, AlbumFull, TrackFull, PlaylistFull, Disc} from "@/types/spotify";
+import type { ArtistFull, AlbumFull, TrackFull, PlaylistFull, Disc } from "@/types/spotify";
 
 // ArtistItem props
 export interface ArtistItemProps {
-    artist: ArtistFull;
-    href?: string;
-    className?: string;
-    index?: number;
+  artist: ArtistFull;
+  href?: string;
+  className?: string;
+  index?: number;
 }
 
 // AlbumItem props
 export interface AlbumItemProps {
-    album: AlbumFull | SpotifyApi.AlbumObjectSimplified;
-    href?: string;
-    className?: string;
+  album: AlbumFull | SpotifyApi.AlbumObjectSimplified;
+  href?: string;
+  className?: string;
+  images: MediaImage[];
 }
 
 // Media
 export interface MediaImage {
-    url: string;
-    alt?: string;
-    width?: number;
-    height?: number;
+  url: string;
+  alt?: string;
+  width?: number;
+  height?: number;
 }
 
 export type MediaCardProps = {
@@ -31,17 +32,17 @@ export type MediaCardProps = {
   href?: string;
   className?: string;
 } & (
-  | { loading: true; title?: string }      // skeleton mode
-  | { loading?: false; title: string }     // normal mode
-);
+    | { loading: true; title?: string }      // skeleton mode
+    | { loading?: false; title: string }     // normal mode
+  );
 
 // Filters
 export type FilterOptions = "all" | "artist" | "album" | "track" | "playlist";
 
 export interface FilterRadiosProps {
-    value: FilterOptions;
-    onChange: (value: FilterOptions) => void;
-    options?: FilterOptions[];
+  value: FilterOptions;
+  onChange: (value: FilterOptions) => void;
+  options?: FilterOptions[];
 }
 
 // Search
@@ -54,8 +55,8 @@ export type SearchResult =
   | { type: "playlist"; item: PlaylistFull };
 
 export interface MusicItemProps {
-    res: SearchResult;
-    onSelect: () => void;
+  res: SearchResult;
+  onSelect: () => void;
 }
 
 export interface TrackRowProps {
