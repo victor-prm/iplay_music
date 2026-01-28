@@ -17,9 +17,9 @@ export default function MediaCard({
       <div
         className={`
           flex flex-col h-full gap-2 border border-iplay-white/10 rounded-md
-          overflow-hidden shadow-2xl/10 shadow-iplay-grape
-          ${loading ? "animate-pulse" : ""}
+          overflow-hidden shadow-md/10 shadow-iplay-grape
           ${className}
+          ${loading ? "animate-pulse" : ""}
         `}
       >
         {/* Image */}

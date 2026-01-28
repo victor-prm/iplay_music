@@ -1,4 +1,5 @@
-import { Suspense, ReactNode, Children } from "react";
+// MediaSection.tsx
+import { Suspense, ReactNode } from "react";
 import MediaGridSkeleton from "./MediaGridSkeleton";
 
 interface MediaSectionProps {
@@ -14,15 +15,15 @@ export default function MediaSection({
   variant = "vertical",
   children,
 }: MediaSectionProps) {
+    console.log(variant, children)
 
   return (
     <section className="flex flex-col gap-4">
-      {title && (
-        <h2 className={`text-2xl font-bold ${titleClassName}`}>
+      {(title) && (
+        <h2 className={`text-2xl font-bold font-dm-sans ${titleClassName}`}>
           {title}
         </h2>
       )}
-
       <Suspense
         fallback={<MediaGridSkeleton showTitle={false} variant={variant} />}
       >

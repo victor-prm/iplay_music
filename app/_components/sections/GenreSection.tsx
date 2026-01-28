@@ -1,12 +1,13 @@
 // app/_components/sections/GenreSection.tsx
 import MediaGrid, { MediaGridItem } from "../media_comps/MediaGrid";
+import MediaSection from "../media_comps/MediaSection";
 import { getArtistsByGenre } from "@/app/_lib/dal";
 import { myCategories } from "@/app/_data/static";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 
 export default async function GenreSection() {
   // Pick 6 random categories
-  const randomCategories = [...myCategories].sort(() => Math.random() - 0.5).slice(0, 6);
+  const randomCategories = [...myCategories].sort(() => Math.random() - 0.5).slice(0, 12);
 
   // Fetch genre data
   const genrePreviews: MediaGridItem[] = (
@@ -32,7 +33,12 @@ export default async function GenreSection() {
     )
   ).filter(Boolean) as MediaGridItem[];
 
+  // Hide entire section if no items
   if (!genrePreviews.length) return null;
 
-  return <MediaGrid items={genrePreviews} />;
+  return (
+    <MediaSection title="Browse genres">
+      <MediaGrid items={genrePreviews} />
+    </MediaSection>
+  );
 }

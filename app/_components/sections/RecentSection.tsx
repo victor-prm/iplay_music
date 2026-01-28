@@ -1,6 +1,7 @@
 // app/_components/sections/RecentSection.tsx
 import { fetchFromSpotify, getArtistsByName } from "@/app/_lib/dal";
 import MediaGrid, { MediaGridItem } from "@/app/_components/media_comps/MediaGrid";
+import MediaSection from "@/app/_components/media_comps/MediaSection";
 
 function getSearchYears(now = new Date()) {
   const year = now.getFullYear();
@@ -34,7 +35,7 @@ export default async function RecentSection() {
 
   const recentAlbums = albums.filter(album =>
     album.album_type === "album" &&
-    isWithinLastMonths(album, 3) // last 3 months
+    isWithinLastMonths(album, 3)
   );
 
   const firstArtistNames = recentAlbums.map(a => a.artists[0].name);
@@ -43,7 +44,7 @@ export default async function RecentSection() {
 
   const popularAlbums = recentAlbums.filter(album => {
     const artist = artistMap[album.artists[0].name];
-    return artist?.popularity >= 100;
+    return artist?.popularity >= 50;
   });
 
   const dedupedMap: Record<string, SpotifyApi.AlbumObjectSimplified> = {};
@@ -60,11 +61,11 @@ export default async function RecentSection() {
     title: album.name,
     images: album.images[0]
       ? [{
-          url: album.images[0].url,
-          width: album.images[0].width,
-          height: album.images[0].height,
-          alt: `Album cover for ${album.name}`,
-        }]
+        url: album.images[0].url,
+        width: album.images[0].width,
+        height: album.images[0].height,
+        alt: `Album cover for ${album.name}`,
+      }]
       : undefined,
     meta: album.artists.map(a => a.name).join(" • "),
     href: `/album/${album.id}`,
@@ -72,5 +73,10 @@ export default async function RecentSection() {
 
   if (!items.length) return null;
 
-  return <MediaGrid items={items} variant="horizontal" />;
+  // ✅ Wrap with MediaSection here so the title only renders if items exist
+  return (
+    <MediaSection title="Recent Popular Releases" variant="horizontal">
+      <MediaGrid items={items} variant="horizontal" />
+    </MediaSection>
+  );
 }
