@@ -15,7 +15,6 @@ export default function MediaSection({
   variant = "vertical",
   children,
 }: MediaSectionProps) {
-    console.log(variant, children)
 
   return (
     <section className="flex flex-col gap-4">

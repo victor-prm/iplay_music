@@ -31,6 +31,7 @@ export type MediaCardProps = {
   meta?: React.ReactNode;
   href?: string;
   className?: string;
+  type?: string,
 } & (
     | { loading: true; title?: string }      // skeleton mode
     | { loading?: false; title: string }     // normal mode

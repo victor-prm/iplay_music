@@ -13,7 +13,7 @@ export default async function GenreSection() {
   const genrePreviews: MediaGridItem[] = (
     await Promise.all(
       randomCategories.map(async (cat) => {
-        const artists = await getArtistsByGenre(cat, 4);
+        const artists = await getArtistsByGenre(cat, 10);
         const filteredArtists = artists.filter(a => a.popularity >= 50);
         if (!filteredArtists.length) return null;
 
@@ -28,10 +28,13 @@ export default async function GenreSection() {
             </span>
           ),
           href: `/genre/${cat.replaceAll(" ", "_").toLowerCase()}`,
+          type: "genre"
         } as MediaGridItem;
       })
     )
   ).filter(Boolean) as MediaGridItem[];
+
+  genrePreviews.slice(0, 4)
 
   // Hide entire section if no items
   if (!genrePreviews.length) return null;

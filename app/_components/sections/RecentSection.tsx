@@ -69,6 +69,7 @@ export default async function RecentSection() {
       : undefined,
     meta: album.artists.map(a => a.name).join(" • "),
     href: `/album/${album.id}`,
+    type: "album"
   }));
 
   if (!items.length) return null;
