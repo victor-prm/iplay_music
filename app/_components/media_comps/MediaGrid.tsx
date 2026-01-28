@@ -1,11 +1,12 @@
 // app/_components/MediaGrid.tsx
 import MediaCard from "./MediaCard";
 import type { MediaImage } from "@/types/components";
+import { UpToFour } from "@/types/components";
 
 export interface MediaGridItem {
   id: string | number;
   title: string;
-  images?: MediaImage[];
+  images?: UpToFour<MediaImage>;
   meta?: React.ReactNode;
   href?: string;
   type?: string;
@@ -19,8 +20,6 @@ interface MediaGridProps {
   title?: string;
   titleClassName?: string;
 }
-
-
 
 export default function MediaGrid({
   items,

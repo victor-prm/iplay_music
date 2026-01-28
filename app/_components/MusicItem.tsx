@@ -3,16 +3,22 @@
 import Link from "next/link";
 import MediaFigure from "./media_comps/MediaFigure";
 import { spotifyImagesToMediaImages } from "@/app/_utils/helpers";
-import type { SearchResult, MusicItemProps } from "@/types/components";
+import type { SearchResult, MusicItemProps, UpToFour, MediaImage } from "@/types/components";
 
 export default function MusicItem({ res, onSelect }: MusicItemProps) {
   const meta = getResultMeta(res);
   const href = getHref(res);
 
-  const images = spotifyImagesToMediaImages(
-    getImages(res),
-    res.item.name
-  );
+  // Ensure each image is cast to the exact MediaImage type from your module
+  const rawImages = spotifyImagesToMediaImages(getImages(res), res.item.name) ?? [];
+  const images: UpToFour<MediaImage> = rawImages
+    .slice(0, 4)
+    .map(img => ({
+      url: img.url ?? "",
+      alt: img.alt ?? "",
+      width: img.width,
+      height: img.height,
+    })) as UpToFour<MediaImage>;
 
   return (
     <li className="p-1 odd:bg-white/10 rounded-sm my-1">
