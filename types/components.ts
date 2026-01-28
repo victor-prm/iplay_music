@@ -25,9 +25,15 @@ export interface MediaImage {
   width?: number;
   height?: number;
 }
+export type UpToFour<T> =
+  | []
+  | [T]
+  | [T, T]
+  | [T, T, T]
+  | [T, T, T, T];
 
 export type MediaCardProps = {
-  images?: MediaImage[];
+  images?: UpToFour<MediaImage>;
   meta?: React.ReactNode;
   href?: string;
   className?: string;
@@ -69,12 +75,4 @@ export interface TrackRowProps {
 export interface TrackListProps {
   discs: Disc[];
   highlightId?: string;
-}
-
-
-export interface MediaImage {
-  url: string;
-  alt?: string;
-  width?: number;
-  height?: number;
 }
