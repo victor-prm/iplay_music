@@ -1,5 +1,5 @@
 // app/_components/MediaGrid.tsx
-import MediaCard from "@/app/_components/MediaCard";
+import MediaCard from "./MediaCard";
 import type { MediaImage } from "@/types/components";
 
 export interface MediaGridItem {
@@ -15,13 +15,15 @@ type MediaGridVariant = "vertical" | "horizontal";
 interface MediaGridProps {
   items: MediaGridItem[];
   variant?: MediaGridVariant;
+  title?: string;
+  titleClassName?: string;
 }
 
 export default function MediaGrid({
   items,
   variant = "vertical",
 }: MediaGridProps) {
-  if (!items.length) return null;
+  if (!items.length) return null;  // ← MediaGrid itself hides the grid
 
   const listClass =
     variant === "horizontal"
@@ -32,12 +34,7 @@ export default function MediaGrid({
     <ul className={listClass}>
       {items.map(item => (
         <li key={item.id}>
-          <MediaCard
-            title={item.title}
-            images={item.images}
-            meta={item.meta}
-            href={item.href}
-          />
+          <MediaCard {...item} />
         </li>
       ))}
     </ul>

@@ -10,7 +10,7 @@ export default function SiteLayout({
   return (
     <>
       <Header />
-      <main className="container p-2 mx-auto py-13 h-full">
+      <main className="flex flex-col gap-8 container p-2 mx-auto py-13 h-full">
         {children}
       </main>
       <Footer />

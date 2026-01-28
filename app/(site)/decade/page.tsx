@@ -2,7 +2,7 @@
 import type { ArtistFull } from "@/types/spotify";
 import { getArtistsByName } from "@/app/_lib/dal";
 import { names1990s } from "@/app/_data/static";
-import MediaCard from "@/app/_components/MediaCard";
+import MediaCard from "@/app/_components/media_comps/MediaCard";
 import PopularityMeter from "@/app/_components/PopularityMeter";
 import { abbreviateNumber } from "@/app/_utils/helpers";
 

@@ -5,7 +5,7 @@ import { getArtistsByGenre } from "@/app/_lib/dal";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 import PopularityMeter from "@/app/_components/PopularityMeter";
 import { abbreviateNumber } from "@/app/_utils/helpers";
-import MediaCard from "@/app/_components/MediaCard";
+import MediaCard from "@/app/_components/media_comps/MediaCard";
 
 interface GenrePageProps {
   params: { id: string } | Promise<{ id: string }>;

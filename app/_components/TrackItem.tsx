@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import ThumbnailFallback from "./ThumbnailFallback";
+import MediaFigureFallback from "./media_comps/MediaFigureFallback";
 import type { TrackRowProps } from "@/types/components";
 
 export default function TrackItem({ track, index, highlighted }: TrackRowProps) {
@@ -35,7 +35,7 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
           className="rounded-sm object-cover"
         />
       ) : (
-        <ThumbnailFallback />
+        <MediaFigureFallback />
       )}
 
       <div className="flex flex-col">

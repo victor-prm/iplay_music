@@ -1,4 +1,4 @@
-import MediaGrid, { MediaGridItem } from "@/app/_components/MediaGrid";
+import MediaGrid, { MediaGridItem } from "@/app/_components/media_comps/MediaGrid";
 import { getArtistsByGenre } from "@/app/_lib/dal";
 import { myCategories } from "@/app/_data/static";
 import { formatGenreQuery } from "@/app/_utils/helpers";

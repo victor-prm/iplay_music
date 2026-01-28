@@ -1,19 +1,18 @@
 // app/page.tsx
-import { Suspense } from "react";
-import RecentSection from "@/app/_components/sections/RecentSection";
+import MediaSection from "@/app/_components/media_comps/MediaSection";
 import GenreSection from "@/app/_components/sections/GenreSection";
-import MediaGridSkeleton from "@/app/_components/MediaGridSkeleton";
+import RecentSection from "@/app/_components/sections/RecentSection";
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
-      <Suspense fallback={<MediaGridSkeleton count={6} />}>
+      <MediaSection title="Browse genres">
         <GenreSection />
-      </Suspense>
+      </MediaSection>
 
-      <Suspense fallback={<MediaGridSkeleton count={8} />}>
+      <MediaSection title="Recent Popular Releases" variant="horizontal">
         <RecentSection />
-      </Suspense>
+      </MediaSection>
     </>
   );
 }

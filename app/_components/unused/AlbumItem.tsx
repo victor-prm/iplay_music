@@ -1,6 +1,6 @@
 /// <reference types="spotify-api" />
 
-import MediaCard from "./MediaCard";
+import MediaCard from "../media_comps/MediaCard";
 import type { AlbumItemProps } from "@/types/components";
 
 export default function AlbumItem({

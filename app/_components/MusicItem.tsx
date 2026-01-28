@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import MediaFigureFallback from "./ MediaFigureFallback";
+import MediaFigureFallback from "./media_comps/MediaFigureFallback";
 import type { SearchResult } from "@/types/components";
 import { MusicItemProps } from "@/types/components";
 

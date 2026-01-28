@@ -1,6 +1,6 @@
 // app/_components/MediaCard.tsx
 import Link from "next/link";
-import { MediaFigure } from "./MediaFigure";
+import MediaFigure from "./MediaFigure";
 import type { MediaCardProps } from "@/types/components";
 
 export default function MediaCard({

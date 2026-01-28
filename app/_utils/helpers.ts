@@ -24,3 +24,19 @@ export function abbreviateNumber(value: number) {
     maximumFractionDigits: 1
   }).format(value);
 }
+
+export function formatDate(dateStr: string, precision?: "year" | "month" | "day") {
+  const date = new Date(dateStr);
+  if (precision === "year") {
+    return date.getFullYear();
+  } else if (precision === "month") {
+    return date.toLocaleString(undefined, { year: "numeric", month: "long" });
+  } else {
+    // day precision
+    return date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+}

@@ -1,12 +1,12 @@
 import Image from "next/image";
-import MediaFigureFallback from "./ MediaFigureFallback";
+import MediaFigureFallback from "./MediaFigureFallback";
 import type { MediaImage } from "@/types/components";
 
 interface MediaFigureProps {
   images?: MediaImage[];
 }
 
-export function MediaFigure({ images }: MediaFigureProps) {
+export default function MediaFigure({ images }: MediaFigureProps) {
   if (!images || images.length === 0) {
     return (
       <MediaFigureFallback />
