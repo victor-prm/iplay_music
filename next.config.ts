@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "mosaic.scdn.co",
       },
+      {
+        protocol: "https",
+        hostname: "flagsapi.com",
+      },
+
     ],
   },
   allowedDevOrigins: ["127.0.0.1:3000"],
