@@ -94,3 +94,17 @@ export function formatDate(dateStr: string, precision?: "year" | "month" | "day"
     });
   }
 }
+
+import type { MediaImage } from "@/types/components";
+
+export function spotifyImagesToMediaImages(
+  images?: SpotifyApi.ImageObject[],
+  alt?: string
+): MediaImage[] | undefined {
+  return images?.map(img => ({
+    url: img.url,
+    width: img.width ?? undefined,
+    height: img.height ?? undefined,
+    alt,
+  }));
+}

@@ -19,7 +19,7 @@ export default function MediaSection({
   return (
     <section className="flex flex-col gap-4">
       {(title) && (
-        <h2 className={`text-2xl font-bold font-dm-sans ${titleClassName}`}>
+        <h2 className={`text-2xl font-bold font-poppins ${titleClassName}`}>
           {title}
         </h2>
       )}

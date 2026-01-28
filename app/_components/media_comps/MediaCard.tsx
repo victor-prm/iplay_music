@@ -13,10 +13,6 @@ export default function MediaCard({
   className = "",
   loading = false,
 }: MediaCardProps) {
-  console.log(type)
-
-  console.log(backroundGradient("Hip Hop"))
-
   return (
     <Link href={href ?? "#"} className="block">
       {/* Container */}

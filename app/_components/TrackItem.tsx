@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
-import MediaFigureFallback from "./media_comps/MediaFigureFallback";
+import MediaFigure from "./media_comps/MediaFigure";
+import { spotifyImagesToMediaImages } from "@/app/_utils/helpers";
 import type { TrackRowProps } from "@/types/components";
 
 export default function TrackItem({ track, index, highlighted }: TrackRowProps) {
   const ref = useRef<HTMLLIElement>(null);
 
   const { name, album, artists } = track;
-  const thumbnail = album?.images?.[0];
+
+  const images = spotifyImagesToMediaImages(album?.images, name);
 
   useEffect(() => {
     if (highlighted && ref.current) {
@@ -24,23 +25,17 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
         highlighted ? "bg-iplay-pink/20 ring-2 ring-iplay-pink" : ""
       }`}
     >
-      {index != null && <span className="w-6 text-right opacity-50">{index}</span>}
-
-      {thumbnail ? (
-        <Image
-          src={thumbnail.url}
-          alt={name}
-          width={40}
-          height={40}
-          className="rounded-sm object-cover"
-        />
-      ) : (
-        <MediaFigureFallback />
+      {index != null && (
+        <span className="w-6 text-right opacity-50">{index}</span>
       )}
 
-      <div className="flex flex-col">
-        <span>{name}</span>
-        <small className="opacity-50">
+      <div className="size-10 overflow-hidden rounded-sm">
+        <MediaFigure images={images} />
+      </div>
+
+      <div className="flex flex-col min-w-0">
+        <span className="truncate">{name}</span>
+        <small className="opacity-50 truncate">
           {artists?.map((a) => a.name).join(" • ")}
         </small>
       </div>

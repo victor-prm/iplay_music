@@ -26,7 +26,6 @@ export default function MediaGrid({
   variant = "vertical",
 }: MediaGridProps) {
   if (!items.length) return null;  // ← MediaGrid itself hides the grid
-  console.log(items)
   const listClass =
     variant === "horizontal"
       ? "grid grid-flow-col auto-cols-[240px] gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory"

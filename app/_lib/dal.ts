@@ -7,18 +7,20 @@ import { normalizeImages } from "../_utils/helpers";
 
 export async function fetchFromSpotify(
     url: string,
-    options?: { revalidate?: number }
+    options?: { revalidate?: number; token?: string }
 ) {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("IPM_access_token");
+    let tokenValue = options?.token;
 
-    if (!token) {
-        redirect("/login");
+    if (!tokenValue) {
+        const cookieStore = await cookies();
+        const token = cookieStore.get("IPM_access_token");
+        if (!token) redirect("/login");
+        tokenValue = token.value;
     }
 
     const response = await fetch(url, {
         headers: {
-            Authorization: `Bearer ${token.value}`,
+            Authorization: `Bearer ${tokenValue}`,
         },
         cache: options?.revalidate ? "force-cache" : "no-store",
         next: options?.revalidate ? { revalidate: options.revalidate } : undefined,
@@ -312,4 +314,8 @@ export async function getArtistsByGenre(
             genres: artist.genres ?? [],
             images: normalizeImages(artist.images),
         }));
+}
+
+export async function getCurrentUser() {
+    return fetchFromSpotify("https://api.spotify.com/v1/me");
 }

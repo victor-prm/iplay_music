@@ -1,40 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-
-import MediaFigureFallback from "./media_comps/MediaFigureFallback";
-import type { SearchResult } from "@/types/components";
-import { MusicItemProps } from "@/types/components";
-
-
+import MediaFigure from "./media_comps/MediaFigure";
+import { spotifyImagesToMediaImages } from "@/app/_utils/helpers";
+import type { SearchResult, MusicItemProps } from "@/types/components";
 
 export default function MusicItem({ res, onSelect }: MusicItemProps) {
   const meta = getResultMeta(res);
-  const thumbnail = getThumbnail(res);
   const href = getHref(res);
+
+  const images = spotifyImagesToMediaImages(
+    getImages(res),
+    res.item.name
+  );
 
   return (
     <li className="p-1 odd:bg-white/10 rounded-sm my-1">
       <Link href={href} onClick={onSelect}>
         <article className="flex items-center gap-2">
-          {thumbnail ? (
-            <Image
-              src={thumbnail.url}
-              alt={res.item.name}
-              width={64}
-              height={64}
-              className="size-12 object-cover rounded-sm border border-white/10"
-            />
-          ) : (
-            <MediaFigureFallback />
-          )}
+          <div className="size-12 overflow-hidden rounded-sm border border-white/10">
+            <MediaFigure images={images} />
+          </div>
 
-          <hgroup className="flex flex-col">
-            <h3 className="font-poppins">{res.item.name}</h3>
-            <small className="font-dm-sans capitalize opacity-50">
+          <hgroup className="flex flex-col min-w-0">
+            <h3 className="font-poppins truncate">{res.item.name}</h3>
+            <small className="font-dm-sans capitalize opacity-50 truncate">
               {res.type}
-              {meta && <> • <span className="normal-case">{meta}</span></>}
+              {meta && (
+                <>
+                  {" "}•{" "}
+                  <span className="normal-case">{meta}</span>
+                </>
+              )}
             </small>
           </hgroup>
         </article>
@@ -55,14 +52,14 @@ function getResultMeta(res: SearchResult): string | null {
   }
 }
 
-function getThumbnail(res: SearchResult) {
+function getImages(res: SearchResult) {
   switch (res.type) {
     case "track":
-      return res.item.album?.images?.[0];
+      return res.item.album?.images;
     case "album":
     case "playlist":
     case "artist":
-      return res.item.images?.[0];
+      return res.item.images;
   }
 }
 
