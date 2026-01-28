@@ -3,14 +3,24 @@
 import { useEffect, useRef } from "react";
 import MediaFigure from "./media_comps/MediaFigure";
 import { spotifyImagesToMediaImages } from "@/app/_utils/helpers";
-import type { TrackRowProps } from "@/types/components";
+import type { TrackRowProps, MediaImage, UpToFour } from "@/types/components";
 
 export default function TrackItem({ track, index, highlighted }: TrackRowProps) {
   const ref = useRef<HTMLLIElement>(null);
 
   const { name, album, artists } = track;
 
-  const images = spotifyImagesToMediaImages(album?.images, name);
+  // Convert to UpToFour<MediaImage>
+  const images: UpToFour<MediaImage> = (
+    (spotifyImagesToMediaImages(album?.images, name) ?? [])
+      .slice(0, 4)
+      .map(img => ({
+        url: img.url,
+        alt: img.alt ?? name,
+        width: img.width,
+        height: img.height,
+      }))
+  ) as UpToFour<MediaImage>;
 
   useEffect(() => {
     if (highlighted && ref.current) {
@@ -36,7 +46,7 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
       <div className="flex flex-col min-w-0">
         <span className="truncate">{name}</span>
         <small className="opacity-50 truncate">
-          {artists?.map((a) => a.name).join(" • ")}
+          {artists?.map(a => a.name).join(" • ")}
         </small>
       </div>
     </li>
