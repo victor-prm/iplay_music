@@ -250,11 +250,11 @@ export async function getArtistsByGenre(
     genreSlug: string,
     minResults = 10,
     market = "DK",
-    maxTries = 5
+    maxTries = 5,
+    limitPerPage = 50
 ): Promise<ArtistFull[]> {
     // Convert slug to a readable genre string
     const genreQuery = formatGenreQuery(genreSlug) // "heavy_metal" → "heavy metal"
-    const limitPerPage = 20;
     let offset = 0;
     let results: SpotifyArtist[] = [];
     let tries = 0;
