@@ -26,6 +26,7 @@ function isWithinLastMonths(
 
 export default function RecentSection() {
   const [items, setItems] = useState<MediaGridItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -43,9 +44,12 @@ export default function RecentSection() {
         album => album.album_type === "album" && isWithinLastMonths(album, 3)
       );
 
-      if (!recentAlbums.length) return;
+      if (!recentAlbums.length) {
+        setIsLoading(false);
+        return;
+      }
 
-      // Deduplicate albums first
+      // Deduplicate albums
       const deduped: Record<string, SpotifyApi.AlbumObjectSimplified> = {};
       for (const album of recentAlbums) {
         const key = `${album.artists[0].name.toLowerCase()}-${album.name.toLowerCase()}`;
@@ -56,14 +60,12 @@ export default function RecentSection() {
       }
 
       // Append each album individually
-      for (const album of Object.values(deduped)) {
+      const dedupedAlbums = Object.values(deduped);
+      for (const [index, album] of dedupedAlbums.entries()) {
         const artistName = album.artists[0]?.name;
         if (!artistName) continue;
 
-        // Fetch artist info individually
         const artistInfo = (await getArtistsByName([artistName]))[0];
-
-        // Skip unpopular artists
         if (!artistInfo || artistInfo.popularity < 50) continue;
 
         const newItem: MediaGridItem = {
@@ -83,6 +85,9 @@ export default function RecentSection() {
         };
 
         setItems(prev => [...prev, newItem]);
+
+        // If this is the last album, remove loading
+        if (index === dedupedAlbums.length - 1) setIsLoading(false);
       }
     }
 
@@ -99,7 +104,7 @@ export default function RecentSection() {
   }));
 
   return (
-    <MediaSection title="Recent Popular Releases">
+    <MediaSection title="Recent Popular Releases" isLoading={isLoading}>
       <MediaGrid items={items.length ? items : placeholders} variant="horizontal" />
     </MediaSection>
   );

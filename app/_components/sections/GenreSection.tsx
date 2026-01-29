@@ -10,6 +10,7 @@ import type { UpToFour, MediaImage } from "@/types/components";
 
 export default function GenreSection() {
   const [items, setItems] = useState<MediaGridItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const randomCategories = [...myCategories]
@@ -17,6 +18,8 @@ export default function GenreSection() {
       .slice(0, 12);
 
     const targetArtistsPerCategory = 3;
+
+    let loadedCount = 0;
 
     // Fetch each category one by one, appending items as they load
     randomCategories.forEach(async (cat) => {
@@ -47,6 +50,11 @@ export default function GenreSection() {
 
       // Append the item to state
       setItems(prev => [...prev, newItem]);
+
+      loadedCount++;
+      if (loadedCount === randomCategories.length) {
+        setIsLoading(false); // done loading all
+      }
     });
   }, []);
 
@@ -61,7 +69,7 @@ export default function GenreSection() {
   }));
 
   return (
-    <MediaSection title="Browse genres">
+    <MediaSection title="Browse genres" isLoading={isLoading}>
       <MediaGrid
         items={items.length ? items : placeholders}
         loadingShape="wide"
