@@ -2,7 +2,6 @@
 import { getCurrentUser } from "../_lib/dal";
 import MediaFigure from "./media_comps/MediaFigure";
 import { spotifyImagesToMediaImages } from "../_utils/helpers";
-import { FaRegUser } from "react-icons/fa";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { MdMoneyOffCsred } from "react-icons/md";
 import { GiSevenPointedStar } from "react-icons/gi";
@@ -28,7 +27,7 @@ export default async function UserGreeting() {
     <section className="flex items-center gap-4">
       <MediaFigure
         images={images}
-        fallbackIcon={FaRegUser}
+        fallbackType="artist"
         fallbackClassName="size-14 rounded-full"
         fallbackIconClassName="text-white/50"
       />
