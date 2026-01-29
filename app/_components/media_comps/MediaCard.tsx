@@ -18,7 +18,8 @@ export default function MediaCard({
   className = "",
   loadingShape = "square",
 }: MediaCardPropsExtended) {
-  const loading = !images || images.length === 0;
+  const hasImages = images && images.length > 0;
+  const loading = !hasImages; // true only if no images
 
   let aspectClass = "aspect-square";
   if (loading) {
@@ -44,7 +45,6 @@ export default function MediaCard({
           className={`w-full overflow-hidden border-b border-iplay-white/10 relative ${loading ? aspectClass : ""}`}
         >
           <MediaFigure
-            key={loading ? "loading" : "loaded"}
             images={images}
             fallbackType={type as any}
             applyGrayscale={!loading && type === "genre"}

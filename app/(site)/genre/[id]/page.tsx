@@ -16,7 +16,7 @@ export default async function GenrePage({ params }: GenrePageProps) {
 
   if (!genreSlug) return <p>No genre selected.</p>;
 
-  // Fetch initial artists directly via DAL
+  // Fetch artists via DAL
   const initialArtists: ArtistFull[] = await getArtistsByGenre(
     genreSlug,
     PAGE_SIZE,
@@ -39,11 +39,7 @@ export default async function GenrePage({ params }: GenrePageProps) {
         Showing {initialArtists.length} result{initialArtists.length > 1 ? "s" : ""}
       </p>
 
-      <ArtistGridGenre
-        genreSlug={genreSlug}
-        initialArtists={initialArtists} // pass artists directly
-        pageSize={PAGE_SIZE}
-      />
+      <ArtistGridGenre initialArtists={initialArtists} />
     </MediaSection>
   );
 }

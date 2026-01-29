@@ -14,7 +14,7 @@ interface MediaFigureProps {
   onImagesLoaded?: () => void;
   loadingShape?: "square" | "wide" | "tall";
   loading?: boolean;
-  fillContainer?: boolean; // only fills parent if true
+  fillContainer?: boolean;
 }
 
 export default function MediaFigure({
@@ -59,8 +59,13 @@ export default function MediaFigure({
 
   // --- Images ---
   const [loaded, setLoaded] = useState<boolean[]>(
-    new Array(images.length).fill(false)
+    () => images?.map(() => false) || []
   );
+
+  // Reset loaded state if images array changes
+  useEffect(() => {
+    setLoaded(images?.map(() => false) || []);
+  }, [images]);
 
   const handleLoad = (index: number) => {
     setLoaded(prev => {
