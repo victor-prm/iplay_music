@@ -44,7 +44,6 @@ export default function RecentSection() {
 
       const albums = data.albums?.items ?? [];
 
-      // Only recent full albums
       const recentAlbums = albums.filter(
         album =>
           album.album_type === "album" &&
@@ -56,7 +55,6 @@ export default function RecentSection() {
         return;
       }
 
-      // Fetch artists to filter by popularity
       const artistNames = recentAlbums
         .map(a => a.artists[0]?.name)
         .filter(Boolean);
@@ -71,7 +69,6 @@ export default function RecentSection() {
         return artist?.popularity >= 50;
       });
 
-      // De-dupe by artist + album name (keep newest)
       const deduped: Record<string, SpotifyApi.AlbumObjectSimplified> = {};
       for (const album of popularAlbums) {
         const key = `${album.artists[0].name.toLowerCase()}-${album.name.toLowerCase()}`;
@@ -107,15 +104,19 @@ export default function RecentSection() {
     fetchData();
   }, []);
 
+  // Reserve 8 placeholder cards to keep spacing consistent
+  const placeholders: MediaGridItem[] = Array.from({ length: 8 }, (_, i) => ({
+    id: `placeholder-${i}`,
+    title: "",
+    images: [] as UpToFour<MediaImage>,
+    meta: null,
+    href: "#",
+    type: "album",
+  }));
+
   return (
     <MediaSection title="Recent Popular Releases">
-      {items === null ? null : items.length === 0 ? (
-        <p className="text-sm text-iplay-white/50">
-          No recent albums available.
-        </p>
-      ) : (
-        <MediaGrid items={items} variant="horizontal" />
-      )}
+      <MediaGrid items={items ?? placeholders} variant="horizontal" />
     </MediaSection>
   );
 }

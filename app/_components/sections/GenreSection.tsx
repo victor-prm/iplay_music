@@ -18,20 +18,19 @@ export default function GenreSection() {
         .slice(0, 12);
 
       const targetArtistsPerCategory = 3;
-      const results: MediaGridItem[] = [];
 
-      for (const cat of randomCategories) {
+      // Map each category to a fetch promise
+      const categoryPromises = randomCategories.map(async (cat) => {
         const artists = await getArtistsByGenre(cat, targetArtistsPerCategory);
         const selected = artists.slice(0, targetArtistsPerCategory);
-
-        if (!selected.length) continue;
+        if (!selected.length) return null;
 
         const images = selected
           .map(a => a.images?.[0])
           .filter(Boolean)
           .slice(0, 4) as UpToFour<MediaImage>;
 
-        results.push({
+        return {
           id: cat,
           title: formatGenreQuery(cat),
           images,
@@ -45,24 +44,31 @@ export default function GenreSection() {
           ),
           href: `/genre/${cat.replaceAll(" ", "_").toLowerCase()}`,
           type: "genre",
-        });
-      }
+        } as MediaGridItem;
+      });
 
-      setItems(results);
+      // Wait for all categories in parallel
+      const categoryResults = await Promise.all(categoryPromises);
+
+      setItems(categoryResults.filter(Boolean) as MediaGridItem[]);
     }
 
     fetchData();
   }, []);
 
+  // Reserve grid space with placeholders to prevent title stacking
+  const placeholders = Array.from({ length: 12 }, (_, i) => ({
+    id: `placeholder-${i}`,
+    title: "",
+    images: [] as UpToFour<MediaImage>,
+    meta: null,
+    href: "#",
+    type: "genre",
+  }));
+
   return (
     <MediaSection title="Browse genres">
-      {items === null ? null : items.length === 0 ? (
-        <p className="text-sm text-iplay-white/50">
-          No genres available at this time.
-        </p>
-      ) : (
-        <MediaGrid items={items} />
-      )}
+      <MediaGrid items={items ?? placeholders} />
     </MediaSection>
   );
 }
