@@ -299,21 +299,19 @@ export async function getArtistsByGenre(
     // Sort by followers (most popular first)
     uniqueResults.sort((a, b) => (b.followers?.total ?? 0) - (a.followers?.total ?? 0));
 
-    return uniqueResults
-        .slice(0, minResults)
-        .map((artist): ArtistFull => ({
-            ...artist,
-            type: "artist",
-            href: `https://api.spotify.com/v1/artists/${artist.id}`,
-            external_urls: { spotify: `https://open.spotify.com/artist/${artist.id}` },
-            uri: `spotify:artist:${artist.id}`,
-            followers: {
-                total: artist.followers?.total ?? 0,
-                href: null,
-            },
-            genres: artist.genres ?? [],
-            images: normalizeImages(artist.images),
-        }));
+    return uniqueResults.map((artist): ArtistFull => ({
+        ...artist,
+        type: "artist",
+        href: `https://api.spotify.com/v1/artists/${artist.id}`,
+        external_urls: { spotify: `https://open.spotify.com/artist/${artist.id}` },
+        uri: `spotify:artist:${artist.id}`,
+        followers: {
+            total: artist.followers?.total ?? 0,
+            href: null,
+        },
+        genres: artist.genres ?? [],
+        images: normalizeImages(artist.images),
+    }));
 }
 
 export async function getCurrentUser() {

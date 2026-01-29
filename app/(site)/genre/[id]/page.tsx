@@ -8,7 +8,7 @@ interface GenrePageProps {
   params: { id: string };
 }
 
-const PAGE_SIZE = 50; // max per request to get more relevant results initially
+const PAGE_SIZE = 50; // max per batch
 
 export default async function GenrePage({ params }: GenrePageProps) {
   const resolvedParams = await params;
@@ -16,31 +16,32 @@ export default async function GenrePage({ params }: GenrePageProps) {
 
   if (!genreSlug) return <p>No genre selected.</p>;
 
-  // Fetch initial artists directly using DAL
+  // Fetch initial artists directly via DAL
   const initialArtists: ArtistFull[] = await getArtistsByGenre(
     genreSlug,
     PAGE_SIZE,
     "DK", // market
-    5     // max tries
+    5,    // max tries
+    PAGE_SIZE // limit per page
   );
 
   if (!initialArtists.length) {
     return (
-      <MediaSection title={`Genre: ${formatGenreQuery(genreSlug)}`}>
+      <MediaSection title={`Popular ${formatGenreQuery(genreSlug)} artists`}>
         <p className="text-sm text-iplay-white/50">No artists found for this genre.</p>
       </MediaSection>
     );
   }
 
   return (
-    <MediaSection title={`Genre: ${formatGenreQuery(genreSlug)}`}>
+    <MediaSection title={`Popular ${formatGenreQuery(genreSlug)} artists`}>
       <p className="text-sm text-iplay-white/60">
         Showing {initialArtists.length} result{initialArtists.length > 1 ? "s" : ""}
       </p>
 
       <ArtistGridGenre
         genreSlug={genreSlug}
-        initialArtists={initialArtists} // <-- pass artists directly
+        initialArtists={initialArtists} // pass artists directly
         pageSize={PAGE_SIZE}
       />
     </MediaSection>
