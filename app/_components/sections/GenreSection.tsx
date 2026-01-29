@@ -3,91 +3,77 @@
 import { useEffect, useState } from "react";
 import MediaGrid, { MediaGridItem } from "../media_comps/MediaGrid";
 import MediaSection from "../media_comps/MediaSection";
-import MediaGridSkeleton from "../media_comps/MediaGridSkeleton";
 import { getArtistsByGenre } from "@/app/_lib/dal";
 import { myCategories } from "@/app/_data/static";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 import type { UpToFour, MediaImage } from "@/types/components";
 
 export default function GenreSection() {
-  const [items, setItems] = useState<(MediaGridItem | null)[] | null>(null);
+  const [items, setItems] = useState<MediaGridItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      const randomCategories = [...myCategories]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 12);
+    const randomCategories = [...myCategories]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 12);
 
-      const targetArtistsPerCategory = 3;
+    const targetArtistsPerCategory = 3;
 
-      const genrePreviews: (MediaGridItem | null)[] =
-        Array(randomCategories.length).fill(null);
+    let loadedCount = 0;
 
-      for (let i = 0; i < randomCategories.length; i++) {
-        const cat = randomCategories[i];
+    // Fetch each category one by one, appending items as they load
+    randomCategories.forEach(async (cat) => {
+      const artists = await getArtistsByGenre(cat, targetArtistsPerCategory);
+      const selected = artists.slice(0, targetArtistsPerCategory);
+      if (!selected.length) return;
 
-        // Over-fetch slightly for robustness
-        const artists = await getArtistsByGenre(
-          cat,
-          targetArtistsPerCategory
-        );
+      const images = selected
+        .map(a => a.images?.[0])
+        .filter(Boolean)
+        .slice(0, 4) as UpToFour<MediaImage>;
 
-        const selected = artists.slice(0, targetArtistsPerCategory);
-        if (!selected.length) continue;
+      const newItem: MediaGridItem = {
+        id: cat,
+        title: formatGenreQuery(cat),
+        images,
+        meta: (
+          <span className="text-xs opacity-70 line-clamp-2">
+            {selected.map(a => a.name).join(" • ")}
+            {artists.length > selected.length && (
+              <span className="opacity-50"> etc.</span>
+            )}
+          </span>
+        ),
+        href: `/genre/${cat.replaceAll(" ", "_").toLowerCase()}`,
+        type: "genre",
+      };
 
-        const images = selected
-          .map(a => a.images?.[0])
-          .filter(Boolean)
-          .slice(0, 4) as UpToFour<MediaImage>;
+      // Append the item to state
+      setItems(prev => [...prev, newItem]);
 
-        genrePreviews[i] = {
-          id: cat,
-          title: formatGenreQuery(cat),
-          images,
-          meta: (
-            <span className="text-xs opacity-70 line-clamp-2">
-              {selected.map(a => a.name).join(" • ")}
-              {artists.length > selected.length && (
-                <span className="opacity-50"> etc.</span>
-              )}
-            </span>
-          ),
-          href: `/genre/${cat.replaceAll(" ", "_").toLowerCase()}`,
-          type: "genre",
-        };
-
-        // incremental update
-        setItems([...genrePreviews]);
+      loadedCount++;
+      if (loadedCount === randomCategories.length) {
+        setIsLoading(false); // done loading all
       }
-    }
-
-    fetchData();
+    });
   }, []);
 
+  // Placeholders to preserve grid layout
+  const placeholders = Array.from({ length: 12 }, (_, i) => ({
+    id: `placeholder-${i}`,
+    title: "",
+    images: [] as UpToFour<MediaImage>,
+    meta: null,
+    href: "#",
+    type: "genre",
+  }));
+
   return (
-    <MediaSection title="Browse genres">
-      {items === null ? (
-        <MediaGridSkeleton />
-      ) : items.every(i => i === null) ? (
-        <p className="text-sm text-iplay-white/50">
-          No genres available at this time.
-        </p>
-      ) : (
-        <MediaGrid
-          items={items.map(item =>
-            item ??
-            ({
-              id: `loading-${Math.random()}`,
-              title: "Loading...",
-              images: [],
-              meta: null,
-              href: "#",
-              type: "genre",
-              loading: true,
-            } as MediaGridItem)
-          )}
-        />
-      )}
+    <MediaSection title="Browse genres" isLoading={isLoading}>
+      <MediaGrid
+        items={items.length ? items : placeholders}
+        loadingShape="wide"
+      />
     </MediaSection>
   );
 }

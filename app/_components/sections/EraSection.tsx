@@ -3,112 +3,88 @@
 import { useEffect, useState } from "react";
 import MediaGrid, { MediaGridItem } from "../media_comps/MediaGrid";
 import MediaSection from "../media_comps/MediaSection";
-import MediaGridSkeleton from "../media_comps/MediaGridSkeleton";
 import { fetchFromSpotify } from "@/app/_lib/dal";
 import type { UpToFour, MediaImage } from "@/types/components";
 
 export default function EraSection() {
-  const [items, setItems] = useState<(MediaGridItem | null)[] | null>(null);
+    const [items, setItems] = useState<MediaGridItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
-      const eras = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020];
-      const targetArtistsPerEra = 3;
+    useEffect(() => {
+        const eras = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020];
+        const targetArtistsPerEra = 3;
+        let loadedCount = 0;
 
-      const eraPreviews: (MediaGridItem | null)[] = Array(eras.length).fill(null);
+        eras.forEach(async (startYear) => {
+            const endYear = startYear + 9;
+            const data = await fetchFromSpotify(
+                `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+                    `year:${startYear}-${endYear}`
+                )}&type=album&limit=50&market=DK`
+            ) as { albums: { items: SpotifyApi.AlbumObjectSimplified[] } };
 
-      for (let i = 0; i < eras.length; i++) {
-        const startYear = eras[i];
-        const endYear = startYear + 9;
-        const yearQuery = `year:${startYear}-${endYear}`;
+            if (!data.albums.items.length) return;
 
-        // Fetch albums for this decade
-        const data = await fetchFromSpotify(
-          `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-            yearQuery
-          )}&type=album&limit=50&market=DK`
-        ) as { albums: { items: SpotifyApi.AlbumObjectSimplified[] } };
-
-        if (!data.albums.items.length) continue;
-
-        // Extract artists from albums
-        const artistsMap = new Map<string, { name: string; images: MediaImage[] }>();
-
-        for (const album of data.albums.items) {
-          for (const artist of album.artists) {
-            if (!artistsMap.has(artist.id)) {
-              artistsMap.set(artist.id, {
-                name: artist.name,
-                // Use album image if artist image not available
-                images: album.images
-                  ? album.images.slice(0, 1).map(img => ({
-                      url: img.url,
-                      width: img.width,
-                      height: img.height,
-                    }))
-                  : [],
-              });
+            const artistMap = new Map<string, { name: string; image?: MediaImage }>();
+            for (const album of data.albums.items) {
+                const artist = album.artists[0];
+                if (!artist || artistMap.has(artist.id)) continue;
+                const img = album.images?.[0];
+                artistMap.set(artist.id, {
+                    name: artist.name,
+                    image: img
+                        ? {
+                            url: img.url,
+                            width: img.width,
+                            height: img.height,
+                            alt: `${artist.name} image`,
+                        }
+                        : undefined,
+                });
             }
-          }
-        }
 
-        const selectedArtists = Array.from(artistsMap.values()).slice(0, targetArtistsPerEra);
+            const selected = Array.from(artistMap.values()).slice(0, targetArtistsPerEra);
+            if (!selected.length) return;
 
-        if (!selectedArtists.length) continue;
+            const images = selected.map(a => a.image).filter(Boolean) as UpToFour<MediaImage>;
 
-        // Prepare images for the card
-        const images = selectedArtists
-          .map(a => a.images?.[0])
-          .filter(Boolean)
-          .slice(0, 4) as UpToFour<MediaImage>;
+            const newItem: MediaGridItem = {
+                id: String(startYear),
+                title: `${startYear}s`,
+                href: `/era/${startYear}`,
+                type: "era",
+                images,
+                meta: (
+                    <span className="text-xs opacity-70 line-clamp-2">
+                        {selected.map(a => a.name).join(" • ")}
+                        {artistMap.size > selected.length && <span className="opacity-50"> etc.</span>}
+                    </span>
+                ),
+            };
 
-        eraPreviews[i] = {
-          id: startYear,
-          title: `${startYear}s`,
-          images,
-          meta: (
-            <span className="text-xs opacity-70 line-clamp-2">
-              {selectedArtists.map(a => a.name).join(" • ")}
-              {selectedArtists.length < artistsMap.size && (
-                <span className="opacity-50"> etc.</span>
-              )}
-            </span>
-          ),
-          href: `/era/${startYear}`,
-          type: "era",
-        };
+            setItems(prev => [...prev, newItem]);
 
-        setItems([...eraPreviews]); // incremental update
-      }
-    }
+            loadedCount++;
+            if (loadedCount === eras.length) setIsLoading(false); // all eras loaded
+        });
+    }, []);
 
-    fetchData();
-  }, []);
+    const placeholders = Array.from({ length: 12 }, (_, i) => ({
+        id: `placeholder-${i}`,
+        title: "",
+        images: [] as UpToFour<MediaImage>,
+        meta: null,
+        href: "#",
+        type: "era",
+    }));
 
-  return (
-    <MediaSection title="Browse by era">
-      {items === null ? (
-        <MediaGridSkeleton variant="horizontal" />
-      ) : items.every(i => i === null) ? (
-        <p className="text-sm text-iplay-white/50">
-          No artists available for these eras.
-        </p>
-      ) : (
-        <MediaGrid
-          items={items.map(item =>
-            item ?? {
-              id: `loading-${Math.random()}`,
-              title: "Loading...",
-              images: [],
-              meta: null,
-              href: "#",
-              type: "era",
-              loading: true,
-            } as MediaGridItem
-          )}
-          variant="horizontal"
-        />
-      )}
-    </MediaSection>
-  );
+    return (
+        <MediaSection title="Browse by era" isLoading={isLoading}>
+            <MediaGrid
+                items={items.length ? items : placeholders}
+                loadingShape="wide"
+                variant="horizontal"
+            />
+        </MediaSection>
+    );
 }
