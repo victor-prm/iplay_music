@@ -8,7 +8,7 @@ export default function Header() {
 
     return (
         <header className={`h-auto z-10 fixed bg-linear-to-tr from-iplay-black/80 to-iplay-plum/80 p-2 top-0 w-full border-b border-iplay-grape/20 ${pseudoBlur}`}>
-            <nav className="relative flex h-full items-center justify-between container mx-auto">
+            <nav className="relative flex h-full items-center justify-between container mx-auto max-w-300">
                 <div>
                 </div>
                 <HeaderTitle />

@@ -40,12 +40,12 @@ export default async function UserGreeting() {
           {isPremium ? (
             <small className="flex gap-1 items-center">
               <GiSevenPointedStar className="inline size-4 text-iplay-pink" />
-              Premium user
+              Premium
             </small>
           ) : (
             <small className="flex gap-1 items-center">
               <MdMoneyOffCsred className="inline size-4 text-iplay-pink"/>
-              Free user
+              Free
             </small>
           )}
           {(<small className="flex gap-1 items-center">
