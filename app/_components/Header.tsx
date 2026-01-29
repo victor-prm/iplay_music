@@ -1,6 +1,6 @@
 "use client"
 
-import SearchBar from "./SearchBar"
+import SearchBar from "./search/SearchBar";
 import HeaderTitle from "./HeaderTitle";
 
 export default function Header() {

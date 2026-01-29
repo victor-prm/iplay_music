@@ -3,9 +3,9 @@
 import { useState } from "react";
 import type { FilterOptions } from "@/types/components";
 
-import MusicItem from "./MusicItem";
+import SearchResult from "./SearchResult";
 import FilterRadios from "./FilterRadios";
-import { useSpotifySearch } from "../_lib/hooks/useSpotifySearch";
+import { useSpotifySearch } from "@/app/_lib/hooks/useSpotifySearch";
 
 import { FaSearch, FaTimes } from "react-icons/fa";
 
@@ -77,7 +77,7 @@ export default function SearchBar({ market = "DK" }: SearchBarProps) {
 
             <ul className="overflow-y-auto max-h-[calc(100vh-8rem)] px-2 pb-2">
               {results.map((res) => (
-                <MusicItem
+                <SearchResult
                   key={`${res.type}-${res.item.id}`}
                   res={res}
                   onSelect={() => {

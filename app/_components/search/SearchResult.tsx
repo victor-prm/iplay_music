@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import MediaFigure from "./media_comps/MediaFigure";
+import MediaFigure from "../media_comps/MediaFigure";
 import { spotifyImagesToMediaImages } from "@/app/_utils/helpers";
-import type { SearchResult, MusicItemProps, UpToFour, MediaImage } from "@/types/components";
+import type { SearchResult, SearchResultProps, UpToFour, MediaImage } from "@/types/components";
 
-export default function MusicItem({ res, onSelect }: MusicItemProps) {
+export default function SearchResult({ res, onSelect }: SearchResultProps) {
   const meta = getResultMeta(res);
   const href = getHref(res);
 
