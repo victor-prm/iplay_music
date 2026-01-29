@@ -48,13 +48,13 @@ export default function SearchBar({ market = "DK" }: SearchBarProps) {
     setOpen(!open);
   }
 
- /*  console.log(results) */
+  /*  console.log(results) */
 
   return (
     <div className="relative w-fit flex justify-end">
-      <div className="relative overflow-x-clip transition-width duration-300" style={{"width" : open ? "320px" : "0px"}}>
+      <div className="relative overflow-x-clip transition-width duration-300" style={{ "width": open ? "320px" : "0px", "paddingInline": open ? "4px" : "0px" }}>
 
-        <FaSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-iplay-white/40 pointer-events-none" />
+        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-iplay-white/40 pointer-events-none" />
 
         {/* Input */}
         <input
@@ -68,27 +68,27 @@ export default function SearchBar({ market = "DK" }: SearchBarProps) {
         />
 
         {
-        results.length > 0 && (
-          
-          <div className="absolute left-0 right-0 top-full mt-3 bg-iplay-plum/75 backdrop-blur-xl z-10 rounded-md overflow-hidden">
-            <div className="p-2 sticky top-0 z-10">
-              <FilterRadios value={filter} onChange={handleFilterChange} />
-            </div>
+          results.length > 0 && (
 
-            <ul className="overflow-y-auto max-h-[calc(100vh-8rem)] px-2 pb-2">
-              {results.map((res) => (
-                <SearchResult
-                  key={`${res.type}-${res.item.id}`}
-                  res={res}
-                  onSelect={() => {
-                    setResults([]);
-                    setQuery("");
-                  }}
-                />
-              ))}
-            </ul>
-          </div>
-        )}
+            <div className="absolute left-0 right-0 top-full mt-3 bg-iplay-plum/75 backdrop-blur-xl z-10 rounded-md overflow-hidden">
+              <div className="p-2 sticky top-0 z-10">
+                <FilterRadios value={filter} onChange={handleFilterChange} />
+              </div>
+
+              <ul className="overflow-y-auto max-h-[calc(100vh-8rem)] px-2 pb-2">
+                {results.map((res) => (
+                  <SearchResult
+                    key={`${res.type}-${res.item.id}`}
+                    res={res}
+                    onSelect={() => {
+                      setResults([]);
+                      setQuery("");
+                    }}
+                  />
+                ))}
+              </ul>
+            </div>
+          )}
       </div>
       <button className="flex items-center justify-center px-2 cursor-pointer" onClick={handleToggle}>
         {open ? <FaTimes /> : <FaSearch />}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import MediaFigure from "../media_comps/MediaFigure";
+import MediaFigure from "@/app/_components/media_comps/MediaFigure";
 import { spotifyImagesToMediaImages } from "@/app/_utils/helpers";
 import type { SearchResult, SearchResultProps, UpToFour, MediaImage } from "@/types/components";
 
@@ -11,21 +11,20 @@ export default function SearchResult({ res, onSelect }: SearchResultProps) {
 
   // Ensure each image is cast to the exact MediaImage type from your module
   const rawImages = spotifyImagesToMediaImages(getImages(res), res.item.name) ?? [];
-  const images: UpToFour<MediaImage> = rawImages
-    .slice(0, 4)
-    .map(img => ({
-      url: img.url ?? "",
-      alt: img.alt ?? "",
-      width: img.width,
-      height: img.height,
-    })) as UpToFour<MediaImage>;
-
+  const firstImage: UpToFour<MediaImage> = rawImages[0]
+    ? [{
+      url: rawImages[0].url ?? "",
+      alt: rawImages[0].alt ?? "",
+      width: rawImages[0].width,
+      height: rawImages[0].height,
+    }]
+    : [];
   return (
     <li className="p-1 odd:bg-white/10 rounded-sm my-1">
       <Link href={href} onClick={onSelect}>
         <article className="flex items-center gap-2">
           <div className="size-12 overflow-hidden rounded-sm border border-white/10">
-            <MediaFigure images={images} />
+            <MediaFigure images={firstImage} />
           </div>
 
           <hgroup className="flex flex-col min-w-0">

@@ -61,7 +61,7 @@ export type SearchResult =
   | { type: "track"; item: TrackFull }
   | { type: "playlist"; item: PlaylistFull };
 
-export interface MusicItemProps {
+export interface SearchResultProps {
   res: SearchResult;
   onSelect: () => void;
 }
