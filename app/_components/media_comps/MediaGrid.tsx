@@ -23,7 +23,8 @@ interface MediaGridProps {
   title?: string;
   titleClassName?: string;
   loadingShape?: "square" | "wide" | "tall";
-  minLoadingMs?: number; // NEW
+  isLoading?: boolean;
+  minLoadingMs?: number;
 }
 
 export default function MediaGrid({
@@ -100,18 +101,18 @@ export default function MediaGrid({
       )}
 
       <ul ref={scrollRef} className={`${listClass} auto-rows-fr`}>
-        {(showItems ? items : Array(items.length).fill(null)).map((item, i) => (
+        {items.map((item, index) => (
           <li
-            key={item?.id ?? `placeholder-${i}`}
+            key={index}
             className={`h-full ${variant === "horizontal" ? "snap-center" : ""}`}
           >
             <MediaCard
-              title={item?.title ?? " "}           // placeholder title
-              href={item?.href ?? "#"}            // placeholder href
-              type={item?.type ?? "album"}        // placeholder type
-              meta={item?.meta ?? null}           // optional
-              images={item?.images ?? []}         // empty for loading
-              loadingShape={loadingShape}         // keep your aspect ratio
+              title={item.title || " "}
+              href={item.href || "#"}
+              type={item.type || "album"}
+              meta={item.meta ?? null}
+              images={item.images ?? []}
+              loadingShape={loadingShape}
             />
           </li>
         ))}
