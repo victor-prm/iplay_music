@@ -9,54 +9,48 @@ import { formatGenreQuery } from "@/app/_utils/helpers";
 import type { UpToFour, MediaImage } from "@/types/components";
 
 export default function GenreSection() {
-  const [items, setItems] = useState<MediaGridItem[] | null>(null);
+  const [items, setItems] = useState<MediaGridItem[]>([]);
 
   useEffect(() => {
-    async function fetchData() {
-      const randomCategories = [...myCategories]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 12);
+    const randomCategories = [...myCategories]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 12);
 
-      const targetArtistsPerCategory = 3;
+    const targetArtistsPerCategory = 3;
 
-      // Map each category to a fetch promise
-      const categoryPromises = randomCategories.map(async (cat) => {
-        const artists = await getArtistsByGenre(cat, targetArtistsPerCategory);
-        const selected = artists.slice(0, targetArtistsPerCategory);
-        if (!selected.length) return null;
+    // Fetch each category one by one, appending items as they load
+    randomCategories.forEach(async (cat) => {
+      const artists = await getArtistsByGenre(cat, targetArtistsPerCategory);
+      const selected = artists.slice(0, targetArtistsPerCategory);
+      if (!selected.length) return;
 
-        const images = selected
-          .map(a => a.images?.[0])
-          .filter(Boolean)
-          .slice(0, 4) as UpToFour<MediaImage>;
+      const images = selected
+        .map(a => a.images?.[0])
+        .filter(Boolean)
+        .slice(0, 4) as UpToFour<MediaImage>;
 
-        return {
-          id: cat,
-          title: formatGenreQuery(cat),
-          images,
-          meta: (
-            <span className="text-xs opacity-70 line-clamp-2">
-              {selected.map(a => a.name).join(" • ")}
-              {artists.length > selected.length && (
-                <span className="opacity-50"> etc.</span>
-              )}
-            </span>
-          ),
-          href: `/genre/${cat.replaceAll(" ", "_").toLowerCase()}`,
-          type: "genre",
-        } as MediaGridItem;
-      });
+      const newItem: MediaGridItem = {
+        id: cat,
+        title: formatGenreQuery(cat),
+        images,
+        meta: (
+          <span className="text-xs opacity-70 line-clamp-2">
+            {selected.map(a => a.name).join(" • ")}
+            {artists.length > selected.length && (
+              <span className="opacity-50"> etc.</span>
+            )}
+          </span>
+        ),
+        href: `/genre/${cat.replaceAll(" ", "_").toLowerCase()}`,
+        type: "genre",
+      };
 
-      // Wait for all categories in parallel
-      const categoryResults = await Promise.all(categoryPromises);
-
-      setItems(categoryResults.filter(Boolean) as MediaGridItem[]);
-    }
-
-    fetchData();
+      // Append the item to state
+      setItems(prev => [...prev, newItem]);
+    });
   }, []);
 
-  // Reserve grid space with placeholders to prevent title stacking
+  // Placeholders to preserve grid layout
   const placeholders = Array.from({ length: 12 }, (_, i) => ({
     id: `placeholder-${i}`,
     title: "",
@@ -69,8 +63,8 @@ export default function GenreSection() {
   return (
     <MediaSection title="Browse genres">
       <MediaGrid
-        items={items ?? placeholders}
-        loadingShape="wide" // e.g., set wide placeholders for all loading genre cards
+        items={items.length ? items : placeholders}
+        loadingShape="wide"
       />
     </MediaSection>
   );

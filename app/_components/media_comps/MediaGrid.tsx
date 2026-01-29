@@ -32,7 +32,7 @@ export default function MediaGrid({
   const listClass =
     variant === "horizontal"
       ? "grid grid-flow-col auto-cols-[240px] gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory"
-      : "grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4";
+      : "grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4";
 
   return (
     <ul className={`${listClass} auto-rows-fr`}>
