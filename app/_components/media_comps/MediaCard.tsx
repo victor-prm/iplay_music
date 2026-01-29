@@ -44,6 +44,7 @@ export default function MediaCard({
           className={`w-full overflow-hidden border-b border-iplay-white/10 relative ${loading ? aspectClass : ""}`}
         >
           <MediaFigure
+            key={loading ? "loading" : "loaded"}
             images={images}
             fallbackType={type as any}
             applyGrayscale={!loading && type === "genre"}
