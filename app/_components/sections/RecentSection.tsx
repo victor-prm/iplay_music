@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchFromSpotify, getArtistsByName } from "@/app/_lib/dal";
 import MediaGrid, { MediaGridItem } from "@/app/_components/media_comps/MediaGrid";
 import MediaSection from "@/app/_components/media_comps/MediaSection";
-import MediaGridSkeleton from "@/app/_components/media_comps/MediaGridSkeleton";
+import type { UpToFour, MediaImage } from "@/types/components";
 
 function getSearchYears(now = new Date()) {
   const year = now.getFullYear();
@@ -12,11 +12,19 @@ function getSearchYears(now = new Date()) {
   return month < 3 ? [year - 1, year] : [year];
 }
 
-function isWithinLastMonths(album: SpotifyApi.AlbumObjectSimplified, monthsBack: number, now = new Date()) {
-  if (!album.release_date || album.release_date_precision === "year") return false;
+function isWithinLastMonths(
+  album: SpotifyApi.AlbumObjectSimplified,
+  monthsBack: number,
+  now = new Date()
+) {
+  if (!album.release_date || album.release_date_precision === "year") {
+    return false;
+  }
+
   const releaseDate = new Date(album.release_date);
   const cutoff = new Date(now);
   cutoff.setMonth(cutoff.getMonth() - monthsBack);
+
   return releaseDate >= cutoff;
 }
 
@@ -26,53 +34,74 @@ export default function RecentSection() {
   useEffect(() => {
     async function fetchData() {
       const years = getSearchYears();
-      const yearQuery = "year:" + years.join("-");
+      const yearQuery = `year:${years.join("-")}`;
 
       const data = await fetchFromSpotify(
-        `https://api.spotify.com/v1/search?q=${encodeURIComponent(yearQuery)}&type=album&limit=50&market=DK`
+        `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+          yearQuery
+        )}&type=album&limit=50&market=DK`
       ) as { albums: { items: SpotifyApi.AlbumObjectSimplified[] } };
 
       const albums = data.albums?.items ?? [];
 
-      const recentAlbums = albums.filter(album =>
-        album.album_type === "album" && isWithinLastMonths(album, 3)
+      // Only recent full albums
+      const recentAlbums = albums.filter(
+        album =>
+          album.album_type === "album" &&
+          isWithinLastMonths(album, 3)
       );
 
-      const firstArtistNames = recentAlbums.map(a => a.artists[0].name);
-      const artists = await getArtistsByName(firstArtistNames);
-      const artistMap = Object.fromEntries(artists.map(a => [a.name, a]));
+      if (!recentAlbums.length) {
+        setItems([]);
+        return;
+      }
+
+      // Fetch artists to filter by popularity
+      const artistNames = recentAlbums
+        .map(a => a.artists[0]?.name)
+        .filter(Boolean);
+
+      const artists = await getArtistsByName(artistNames);
+      const artistMap = Object.fromEntries(
+        artists.map(a => [a.name, a])
+      );
 
       const popularAlbums = recentAlbums.filter(album => {
         const artist = artistMap[album.artists[0].name];
         return artist?.popularity >= 50;
       });
 
-      const dedupedMap: Record<string, SpotifyApi.AlbumObjectSimplified> = {};
-      popularAlbums.forEach(album => {
+      // De-dupe by artist + album name (keep newest)
+      const deduped: Record<string, SpotifyApi.AlbumObjectSimplified> = {};
+      for (const album of popularAlbums) {
         const key = `${album.artists[0].name.toLowerCase()}-${album.name.toLowerCase()}`;
-        const existing = dedupedMap[key];
-        if (!existing || new Date(album.release_date) > new Date(existing.release_date)) {
-          dedupedMap[key] = album;
-        }
-      });
+        const existing = deduped[key];
 
-      const items: MediaGridItem[] = Object.values(dedupedMap).map(album => ({
+        if (
+          !existing ||
+          new Date(album.release_date) > new Date(existing.release_date)
+        ) {
+          deduped[key] = album;
+        }
+      }
+
+      const results: MediaGridItem[] = Object.values(deduped).map(album => ({
         id: album.id,
         title: album.name,
-        images: album.images[0]
-          ? [{
+        href: `/album/${album.id}`,
+        type: "album",
+        meta: album.artists.map(a => a.name).join(" • "),
+        images: album.images?.[0]
+          ? ([{
               url: album.images[0].url,
               width: album.images[0].width,
               height: album.images[0].height,
               alt: `Album cover for ${album.name}`,
-            }]
-          : undefined,
-        meta: album.artists.map(a => a.name).join(" • "),
-        href: `/album/${album.id}`,
-        type: "album"
+            }] as UpToFour<MediaImage>)
+          : [],
       }));
 
-      setItems(items);
+      setItems(results);
     }
 
     fetchData();
@@ -80,10 +109,10 @@ export default function RecentSection() {
 
   return (
     <MediaSection title="Recent Popular Releases">
-      {items === null ? (
-        <MediaGridSkeleton variant="horizontal" />
-      ) : items.length === 0 ? (
-        <p className="text-sm text-iplay-white/50">No recent albums available.</p>
+      {items === null ? null : items.length === 0 ? (
+        <p className="text-sm text-iplay-white/50">
+          No recent albums available.
+        </p>
       ) : (
         <MediaGrid items={items} variant="horizontal" />
       )}

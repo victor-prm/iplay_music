@@ -1,5 +1,4 @@
-import { Suspense, ReactNode } from "react";
-import MediaGridSkeleton from "./MediaGridSkeleton";
+import { ReactNode } from "react";
 
 interface MediaSectionProps {
   title?: string;
@@ -11,7 +10,6 @@ interface MediaSectionProps {
 export default function MediaSection({
   title,
   titleClassName = "",
-  variant = "vertical",
   children,
 }: MediaSectionProps) {
   return (
@@ -21,9 +19,7 @@ export default function MediaSection({
           {title}
         </h2>
       )}
-      <Suspense fallback={<MediaGridSkeleton variant={variant} />}>
-        {children}
-      </Suspense>
+      {children}
     </section>
   );
 }
