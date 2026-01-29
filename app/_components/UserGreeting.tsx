@@ -24,16 +24,16 @@ export default async function UserGreeting() {
   ).slice(0, 1) as UpToFour<MediaImage>;
 
   return (
-    <section className="flex items-center gap-4">
+    <section className="flex items-center gap-2">
       <MediaFigure
         images={images}
         fallbackType="artist"
-        fallbackClassName="size-14 rounded-full"
+        fallbackClassName="size-12 rounded-full"
         fallbackIconClassName="text-white/50"
       />
 
       <hgroup className="flex flex-col gap-1">
-        <h2 className="text-2xl font-bold font-poppins text-iplay-white">
+        <h2 className="font-bold font-poppins text-iplay-white">
           Welcome back, {user.display_name ?? "Spotify user"}!
         </h2>
         <p className="text-sm text-iplay-white/70 font-dm-sans flex items-center gap-4">

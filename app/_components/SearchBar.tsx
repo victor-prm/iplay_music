@@ -48,7 +48,7 @@ export default function SearchBar({ market = "DK" }: SearchBarProps) {
     setOpen(!open);
   }
 
-  console.log(results)
+ /*  console.log(results) */
 
   return (
     <div className="relative w-fit flex justify-end">
