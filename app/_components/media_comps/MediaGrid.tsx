@@ -23,20 +23,28 @@ interface MediaGridProps {
   title?: string;
   titleClassName?: string;
   loadingShape?: "square" | "wide" | "tall";
+  minLoadingMs?: number; // NEW
 }
 
 export default function MediaGrid({
   items,
   variant = "vertical",
   loadingShape = "square",
+  minLoadingMs = 600, // default 300ms delay
 }: MediaGridProps) {
-  if (!items.length) return null;
-
   const scrollRef = useRef<HTMLUListElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [showItems, setShowItems] = useState(false);
 
-  // Update scroll button visibility
+  // Minimum loading delay
+  useEffect(() => {
+    setShowItems(false);
+    const timer = setTimeout(() => setShowItems(true), minLoadingMs);
+    return () => clearTimeout(timer);
+  }, [items, minLoadingMs]);
+
+  // Update scroll buttons visibility
   const updateScrollButtons = () => {
     if (!scrollRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
@@ -53,7 +61,6 @@ export default function MediaGrid({
     });
   };
 
-  // Attach scroll listener
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -61,7 +68,7 @@ export default function MediaGrid({
     updateScrollButtons(); // initial check
     const handler = () => updateScrollButtons();
     el.addEventListener("scroll", handler);
-    window.addEventListener("resize", handler); // update on resize
+    window.addEventListener("resize", handler);
     return () => {
       el.removeEventListener("scroll", handler);
       window.removeEventListener("resize", handler);
@@ -93,12 +100,19 @@ export default function MediaGrid({
       )}
 
       <ul ref={scrollRef} className={`${listClass} auto-rows-fr`}>
-        {items.map((item) => (
+        {(showItems ? items : Array(items.length).fill(null)).map((item, i) => (
           <li
-            key={item.id}
+            key={item?.id ?? `placeholder-${i}`}
             className={`h-full ${variant === "horizontal" ? "snap-center" : ""}`}
           >
-            <MediaCard {...item} loadingShape={loadingShape} />
+            <MediaCard
+              title={item?.title ?? " "}           // placeholder title
+              href={item?.href ?? "#"}            // placeholder href
+              type={item?.type ?? "album"}        // placeholder type
+              meta={item?.meta ?? null}           // optional
+              images={item?.images ?? []}         // empty for loading
+              loadingShape={loadingShape}         // keep your aspect ratio
+            />
           </li>
         ))}
       </ul>
