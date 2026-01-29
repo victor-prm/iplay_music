@@ -2,29 +2,22 @@
 
 import Image from "next/image";
 import { FaRegUser, FaCompactDisc, FaMusic } from "react-icons/fa";
+import { useState } from "react";
 import type { MediaImage, UpToFour } from "@/types/components";
 
 interface MediaFigureProps {
   images?: UpToFour<MediaImage>;
-  /**
-   * Fallback type determines which icon to show if no images exist
-   */
   fallbackType?: "artist" | "album" | "playlist";
   fallbackClassName?: string;
   fallbackIconClassName?: string;
 }
 
-/**
- * Component to render a single image or a grid of images
- * Falls back to a default icon if no images are provided
- */
 export default function MediaFigure({
   images,
   fallbackType = "artist",
   fallbackClassName = "",
   fallbackIconClassName = "text-white/40 text-3xl",
 }: MediaFigureProps) {
-  /* ---------- Fallback ---------- */
   if (!images || images.length === 0) {
     let Icon;
     switch (fallbackType) {
@@ -43,14 +36,13 @@ export default function MediaFigure({
 
     return (
       <div
-        className={`grid place-items-center bg-iplay-plum border border-white/10 ${fallbackClassName}`}
+        className={`grid place-items-center bg-iplay-plum border border-white/10 ${fallbackClassName} aspect-square`}
       >
         <Icon className={fallbackIconClassName} />
       </div>
     );
   }
 
-  /* ---------- Images Grid ---------- */
   let gridColsClass = "";
   if (images.length === 2) gridColsClass = "grid-cols-2";
   else if (images.length === 3) gridColsClass = "grid-cols-3";
@@ -58,24 +50,27 @@ export default function MediaFigure({
 
   return (
     <div className={`grid ${gridColsClass} gap-0.5`}>
-      {images.map((img, i) => (
-        <div key={i} className="relative w-full aspect-square">
-          <Image
-            src={img.url}
-            alt={img.alt ?? ""}
-            width={img.width ?? 512}
-            height={img.height ?? 512}
-            className="object-cover w-full h-full transition-transform duration-300 ease-out opacity-0 scale-95"
-            onLoad={e => {
-              // fade/scale-in animation on load
-              const target = e.currentTarget;
-              target.classList.remove("opacity-0", "scale-95");
-              target.classList.add("opacity-100", "scale-100");
-            }}
-            loading="lazy"
-          />
-        </div>
-      ))}
+      {images.map((img, i) => {
+        const [loaded, setLoaded] = useState(false);
+
+        return (
+          <div
+            key={i}
+            className={`relative w-full aspect-square overflow-hidden bg-iplay-black/20`}
+          >
+            <Image
+              src={img.url}
+              alt={img.alt ?? ""}
+              width={img.width ?? 512}
+              height={img.height ?? 512}
+              className={`object-cover w-full h-full transition-all duration-500 ease-out
+                ${loaded ? "opacity-100 scale-100 blur-0" : "opacity-0 scale-95 blur-sm"}`}
+              onLoad={() => setLoaded(true)}
+              loading="lazy"
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
