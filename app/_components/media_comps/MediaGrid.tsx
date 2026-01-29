@@ -19,11 +19,13 @@ interface MediaGridProps {
   variant?: MediaGridVariant;
   title?: string;
   titleClassName?: string;
+  loadingShape?: "square" | "wide" | "tall"; // NEW
 }
 
 export default function MediaGrid({
   items,
   variant = "vertical",
+  loadingShape = "square",
 }: MediaGridProps) {
   if (!items.length) return null;
 
@@ -35,8 +37,11 @@ export default function MediaGrid({
   return (
     <ul className={`${listClass} auto-rows-fr`}>
       {items.map(item => (
-        <li key={item.id} className={`h-full ${variant === "horizontal" ? "snap-center" : ""}`}>
-          <MediaCard {...item} />
+        <li
+          key={item.id}
+          className={`h-full ${variant === "horizontal" ? "snap-center" : ""}`}
+        >
+          <MediaCard {...item} loadingShape={loadingShape} />
         </li>
       ))}
     </ul>

@@ -12,6 +12,9 @@ interface MediaFigureProps {
   fallbackIconClassName?: string;
   applyGrayscale?: boolean;
   onImagesLoaded?: () => void;
+  loadingShape?: "square" | "wide" | "tall";
+  loading?: boolean;
+  fillContainer?: boolean; // only fills parent if true
 }
 
 export default function MediaFigure({
@@ -21,21 +24,40 @@ export default function MediaFigure({
   fallbackIconClassName = "text-white/40 text-3xl",
   applyGrayscale = false,
   onImagesLoaded,
+  loadingShape = "square",
+  loading = false,
+  fillContainer = false,
 }: MediaFigureProps) {
+  // --- Placeholder / fallback ---
   if (!images || images.length === 0) {
     let Icon = FaRegUser;
     if (fallbackType === "album") Icon = FaCompactDisc;
     else if (fallbackType === "playlist") Icon = FaMusic;
 
+    // Only apply aspect ratio during loading
+    let aspectClass = "";
+    if (loading) {
+      if (loadingShape === "wide") aspectClass = "aspect-[4/3]";
+      else if (loadingShape === "tall") aspectClass = "aspect-[3/4]";
+      else aspectClass = "aspect-square";
+    }
+
     return (
       <div
-        className={`grid place-items-center bg-iplay-plum border border-white/10 ${fallbackClassName} aspect-square`}
+        className={`
+          grid place-items-center
+          bg-iplay-plum
+          ${fallbackClassName}
+          ${aspectClass}
+          ${fillContainer ? "w-full h-full" : ""}
+        `}
       >
         <Icon className={fallbackIconClassName} />
       </div>
     );
   }
 
+  // --- Images ---
   const [loaded, setLoaded] = useState<boolean[]>(
     new Array(images.length).fill(false)
   );
@@ -48,11 +70,8 @@ export default function MediaFigure({
     });
   };
 
-  // **Effect triggers parent callback only after render**
   useEffect(() => {
-    if (onImagesLoaded && loaded.every(Boolean)) {
-      onImagesLoaded();
-    }
+    if (onImagesLoaded && loaded.every(Boolean)) onImagesLoaded();
   }, [loaded, onImagesLoaded]);
 
   let gridColsClass = "";
@@ -61,11 +80,18 @@ export default function MediaFigure({
   else if (images.length === 4) gridColsClass = "grid-cols-2";
 
   return (
-    <div className={`grid ${gridColsClass} gap-0.5`}>
+    <div
+      className={`grid ${gridColsClass} gap-0.5`}
+      style={fillContainer ? { width: "100%", height: "100%" } : undefined}
+    >
       {images.map((img, i) => (
         <div
           key={i}
-          className="relative w-full aspect-square overflow-hidden bg-iplay-black/20"
+          className="relative w-full overflow-hidden"
+          style={{
+            aspectRatio: loading ? undefined : "1 / 1",
+            height: fillContainer ? "100%" : undefined,
+          }}
         >
           <Image
             src={img.url}

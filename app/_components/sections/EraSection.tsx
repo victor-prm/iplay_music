@@ -86,6 +86,7 @@ export default function EraSection() {
         <MediaSection title="Browse by era">
             <MediaGrid
                 items={items ?? placeholders}
+                loadingShape="wide"
                 variant="horizontal"
             />
         </MediaSection>

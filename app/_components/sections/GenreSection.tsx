@@ -68,7 +68,10 @@ export default function GenreSection() {
 
   return (
     <MediaSection title="Browse genres">
-      <MediaGrid items={items ?? placeholders} />
+      <MediaGrid
+        items={items ?? placeholders}
+        loadingShape="wide" // e.g., set wide placeholders for all loading genre cards
+      />
     </MediaSection>
   );
 }
