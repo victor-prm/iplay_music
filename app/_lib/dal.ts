@@ -332,6 +332,22 @@ export async function getArtistsByGenre(
     }));
 }
 
+export async function getRelatedArtists(
+  artistId: string
+): Promise<ArtistFull[]> {
+  try {
+    const data = await fetchFromSpotify(
+      `https://api.spotify.com/v1/artists/${artistId}/related-artists`
+    );
+
+    return data?.artists ?? [];
+  } catch (err) {
+    // Spotify returns 404 for many valid cases here
+    console.warn("No related artists for", artistId);
+    return [];
+  }
+}
+
 export async function getCurrentUser() {
     return fetchFromSpotify("https://api.spotify.com/v1/me");
 }

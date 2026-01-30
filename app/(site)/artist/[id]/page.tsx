@@ -3,6 +3,7 @@
 
 import { AlbumFull, TrackFull, ArtistFull } from "@/types/spotify";
 import { abbreviateNumber, formatDate } from "@/app/_utils/helpers";
+import AllGenreSection from "@/app/_components/sections/AllGenreSection";
 
 import Image from "next/image";
 import MediaSection from "@/app/_components/media_comps/MediaSection";
@@ -80,6 +81,11 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
                     ]}
                 />
             )}
+
+            <AllGenreSection
+                genres={artistInfo.genres}
+                title={`Genres for ${artistInfo.name}`}
+            />
 
             {/* Albums / Singles / Compilations / Appears On */}
             {Object.entries(albumsByGroup).map(([group, items]) =>
