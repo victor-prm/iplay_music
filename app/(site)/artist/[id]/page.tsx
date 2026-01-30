@@ -44,7 +44,7 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
                     />
                 )}
                 <div className="absolute inset-0 rounded-2xl bg-iplay-black/50 backdrop-blur-sm">
-                    <hgroup className="absolute bottom-0 p-4">
+                    <hgroup className="flex flex-col gap-2 absolute bottom-0 p-4">
                         <h1 className=" font-bold text-6xl font-poppins">{artistInfo.name}</h1>
                         <p className="font-dm-sans">{artistInfo.followers.total  > 0 && abbreviateNumber(artistInfo.followers.total)} followers</p>
                     </hgroup>
@@ -58,7 +58,7 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
 
             {topTracks.length > 0 && (
                 <section>
-                    <h2 className="font-bold text-xl mb-2">Top Tracks</h2>
+                    <h2 className="font-bold text-xl mb-2 font-poppins">Top Tracks</h2>
                     <ul className="flex flex-col gap-1">
                         {topTracks.map((track) => (
                             <li key={track.id}>

@@ -78,14 +78,14 @@ export default function MediaGrid({
 
   const listClass =
     variant === "horizontal"
-      ? "grid grid-flow-col auto-cols-[240px] gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory"
+      ? "grid grid-flow-col auto-cols-[240px] gap-4 overflow-x-auto pb-8 scroll-smooth snap-x snap-mandatory"
       : "grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4";
 
   return (
     <div className="relative">
       {variant === "horizontal" && canScrollLeft && (
         <button
-          className="absolute flex justify-center items-center cursor-pointer backdrop-blur-[1px] border border-iplay-white/25 -left-2 bottom-0 -translate-y-1/2 z-10 size-6 rounded-full bg-iplay-white/10 hover:opacity-50 text-white"
+          className="absolute flex justify-center items-center cursor-pointer backdrop-blur-[1px] border border-iplay-white/25 -left-1 bottom-0 -translate-y-1/2 z-10 size-6 rounded-full bg-iplay-white/10 hover:opacity-50 text-white"
           onClick={() => scrollByCard("left")}
         >
           <FaChevronLeft className="size-2" />
@@ -93,7 +93,7 @@ export default function MediaGrid({
       )}
       {variant === "horizontal" && canScrollRight && (
         <button
-          className="absolute flex justify-center items-center cursor-pointer backdrop-blur-[1px] border border-iplay-white/25 -right-2 bottom-0 -translate-y-1/2 z-10 size-6 rounded-full bg-iplay-white/10 hover:opacity-50 text-white"
+          className="absolute flex justify-center items-center cursor-pointer backdrop-blur-[1px] border border-iplay-white/25 -right-1 bottom-0 -translate-y-1/2 z-10 size-6 rounded-full bg-iplay-white/10 hover:opacity-50 text-white"
           onClick={() => scrollByCard("right")}
         >
           <FaChevronRight className="size-2" />

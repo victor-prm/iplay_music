@@ -27,21 +27,20 @@ export default function MediaCard({
   }
 
   return (
-    <Link href={href ?? "#"} className="block h-full">
+    <Link href={href ?? "#"} className="rounded-sm hover:bg-iplay-white/2.5 overflow-hidden block h-full">
       <div
         className={`
-          flex flex-col h-full gap-2
-          border border-iplay-white/10 rounded-md
-          overflow-hidden bg-iplay-black/50
-          shadow-md/10 shadow-iplay-grape
-          transition-transform duration-300 ease-out
-          hover:scale-[1.015]
+          group
+          flex flex-col h-full gap-1 p-1
           ${loading ? "animate-pulse" : ""}
           ${className}
         `}
       >
         <figure
-          className={`w-full overflow-hidden border-b border-iplay-white/10 relative ${loading ? aspectClass : ""}`}
+          className={`w-full rounded-sm overflow-hidden relative
+          transition-transform duration-300 ease-out
+          group-hover:scale-[1.01]  
+          ${loading ? aspectClass : ""}`}
         >
           <MediaFigure
             images={images}
@@ -60,13 +59,13 @@ export default function MediaCard({
           )}
         </figure>
 
-        <div className="flex flex-col gap-1 px-2 pb-4 min-h-14">
+        <div className="min-h-12">
           <h2 className="text-md font-poppins font-bold line-clamp-1">
             {title}
           </h2>
 
           {!loading && meta && (
-            <div className="text-sm opacity-70 flex flex-wrap items-center gap-2 font-dm-sans">
+            <div className="text-xs opacity-70 flex flex-wrap items-center gap-2 font-dm-sans">
               {meta}
             </div>
           )}

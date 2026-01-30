@@ -83,7 +83,7 @@ export default function MediaFigure({
 
   return (
     <div
-      className={`grid ${gridColsClass} gap-0.5`}
+      className={`grid ${gridColsClass}`}
       style={fillContainer ? { width: "100%", height: "100%" } : undefined}
     >
       {images.map((img, i) => (
