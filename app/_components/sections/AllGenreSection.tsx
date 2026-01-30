@@ -7,11 +7,26 @@ import { handpickedGenres } from "@/app/_data/static";
 interface AllGenreSectionProps {
   genres?: string[];
   title?: string;
+  fallbackToDefault?: boolean; // <-- new flag
 }
 
-export default function AllGenreSection({ genres, title }: AllGenreSectionProps) {
-  const displayGenres = genres?.length ? genres : handpickedGenres;
-  const sectionTitle = title ?? "Browse genres";
+export default function AllGenreSection({
+  genres,
+  title,
+  fallbackToDefault = true,
+}: AllGenreSectionProps) {
+  const displayGenres =
+    genres && genres.length
+      ? genres
+      : fallbackToDefault
+      ? handpickedGenres
+      : [];
+
+  // If no genres to display, optionally return null to skip rendering
+  if (displayGenres.length === 0) return null;
+
+  const sectionTitle =
+    title ?? (genres && genres.length ? "Genres" : "Browse genres");
 
   return (
     <MediaSection title={sectionTitle} isLoading={false}>

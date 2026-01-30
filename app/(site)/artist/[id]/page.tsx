@@ -82,10 +82,7 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
                 />
             )}
 
-            <AllGenreSection
-                genres={artistInfo.genres}
-                title={`Genres for ${artistInfo.name}`}
-            />
+            <AllGenreSection genres={artistInfo.genres} fallbackToDefault={false} title={`Genres for ${artistInfo.name}`}/>
 
             {/* Albums / Singles / Compilations / Appears On */}
             {Object.entries(albumsByGroup).map(([group, items]) =>
