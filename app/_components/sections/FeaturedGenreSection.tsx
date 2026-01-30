@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import MediaGrid, { MediaGridItem } from "../media_comps/MediaGrid";
 import MediaSection from "../media_comps/MediaSection";
 import { getArtistsByGenre } from "@/app/_lib/dal";
-import { myCategories } from "@/app/_data/static";
+import { handpickedGenres } from "@/app/_data/static";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 import type { UpToFour, MediaImage } from "@/types/components";
 
@@ -30,7 +30,7 @@ export default function FeaturedGenreSection() {
     let cancelled = false;
 
     async function load() {
-      const randomCategories = [...myCategories]
+      const randomCategories = [...handpickedGenres]
         .sort(() => Math.random() - 0.5)
         .slice(0, PLACEHOLDER_COUNT);
 

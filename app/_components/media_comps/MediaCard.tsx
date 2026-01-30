@@ -27,7 +27,7 @@ export default function MediaCard({
   }
 
   return (
-    <Link href={href ?? "#"} className="rounded-sm hover:bg-iplay-white/2.5 overflow-hidden block h-full">
+    <Link href={href ?? "#"} className="rounded-sm hover:bg-iplay-white/5 overflow-hidden block h-full">
       <div
         className={`
           group

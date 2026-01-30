@@ -1,12 +1,12 @@
 import MediaGrid, { MediaGridItem } from "@/app/_components/media_comps/MediaGrid";
 import { getArtistsByGenre } from "@/app/_lib/dal";
-import { myCategories } from "@/app/_data/static";
+import { handpickedGenres } from "@/app/_data/static";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 import type { UpToFour, MediaImage } from "@/types/components";
 
 export default async function GenreFeed() {
   const genrePreviews: MediaGridItem[] = await Promise.all(
-    myCategories.map(async cat => {
+    handpickedGenres.map(async cat => {
       const artists = await getArtistsByGenre(cat, 4);
 
       // Convert images to UpToFour<MediaImage>
