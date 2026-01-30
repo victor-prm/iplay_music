@@ -106,32 +106,50 @@ export async function getFilteredPlaylists(
 }
 
 
-export async function getAllAlbumsForArtist(artistId: string, includeGroups = ["album", "single"]) {
-    const limit = 50; // max Spotify allows
+export async function getAllAlbumsForArtist(
+    artistId: string,
+    includeGroups: ("album" | "single" | "appears_on" | "compilation")[] = [
+        "album",
+        "single",
+        "appears_on",
+        "compilation",
+    ]
+) {
+    const limit = 50;
     let offset = 0;
     let allAlbums: any[] = [];
     let hasMore = true;
 
+    // Fetch all pages
     while (hasMore) {
         const url = `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=${includeGroups.join(
             ","
         )}&limit=${limit}&offset=${offset}`;
 
         const data = await fetchFromSpotify(url);
-
         allAlbums = allAlbums.concat(data.items);
 
-        if (data.next) {
-            offset += limit;
-        } else {
-            hasMore = false;
-        }
+        if (data.next) offset += limit;
+        else hasMore = false;
     }
 
-    // Optional: remove duplicates (Spotify sometimes returns same album in multiple markets)
+    // Deduplicate
     const uniqueAlbums = Array.from(new Map(allAlbums.map(a => [a.id, a])).values());
 
-    return uniqueAlbums;
+    // Group by album_group
+    const grouped: Record<string, any[]> = {
+        album: [],
+        single: [],
+        compilation: [],
+        appears_on: [],
+    };
+
+    uniqueAlbums.forEach(album => {
+        const group = album.album_group || album.album_type || "album";
+        if (grouped[group]) grouped[group].push(album);
+    });
+
+    return grouped;
 }
 
 export async function getAlbumTracks(albumId: string) {

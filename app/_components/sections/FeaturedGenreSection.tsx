@@ -6,7 +6,7 @@ import { handpickedGenres } from "@/app/_data/static";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 import type { UpToFour, MediaImage } from "@/types/components";
 
-const PLACEHOLDER_COUNT = 6;
+const PLACEHOLDER_COUNT = 12;
 
 // This will be a **server component**, not "use client"
 export default async function FeaturedGenreSection() {
@@ -56,4 +56,4 @@ export default async function FeaturedGenreSection() {
 }
 
 // ISR configuration (Next.js 13+ app router)
-export const revalidate = 600; // seconds = 10 minutes
+export const revalidate = 1800; // seconds = 10 minutes

@@ -16,7 +16,7 @@ export default function MediaSection({
   isLoading = false,
 }: MediaSectionProps) {
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-3">
       {title && (
         <h2 className={`text-2xl font-bold font-poppins ${titleClassName} flex items-center gap-2`}>
           {title}

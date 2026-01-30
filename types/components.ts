@@ -72,7 +72,11 @@ export interface TrackRowProps {
   highlighted?: boolean;
 }
 
-export interface TrackListProps {
-  discs: Disc[];
-  highlightId?: string;
+export type TrackListProps = {
+  discs: {
+    discNumber: number
+    tracks: TrackFull[]
+  }[]
+  highlightId?: string
+  title?: string
 }

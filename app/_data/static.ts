@@ -34,7 +34,6 @@ export const handpickedGenres = [
   "Reggaeton",
   "Synthpop",
   "K-pop",
-  "Trance",
   "Big Band",
   "Afrobeat",
   "Bossa Nova",

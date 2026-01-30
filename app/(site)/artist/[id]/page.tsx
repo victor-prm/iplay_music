@@ -2,12 +2,13 @@
 /// <reference types="spotify-api" />
 
 import { AlbumFull, TrackFull, ArtistFull } from "@/types/spotify";
-import { abbreviateNumber } from "@/app/_utils/helpers";
+import { abbreviateNumber, formatDate } from "@/app/_utils/helpers";
 
 import Image from "next/image";
-import Link from "next/link";
+import MediaSection from "@/app/_components/media_comps/MediaSection";
+import MediaGrid, { MediaGridItem } from "@/app/_components/media_comps/MediaGrid";
+import TrackList from "@/app/_components/TrackList";
 import { getAllAlbumsForArtist, fetchFromSpotify } from "@/app/_lib/dal";
-
 
 interface ArtistPageProps {
     params: Promise<{ id: string }>;
@@ -15,25 +16,39 @@ interface ArtistPageProps {
 
 export default async function ArtistPage({ params }: ArtistPageProps) {
     const { id: artistId } = await params;
-
     if (!artistId) throw new Error("Artist ID is required");
 
-    const albums: AlbumFull[] = await getAllAlbumsForArtist(artistId, ["album"]);
+    // Fetch all album groups
+    const albumsByGroup = await getAllAlbumsForArtist(artistId, [
+        "album",
+        "single",
+        "compilation",
+        "appears_on",
+    ]);
 
+    // Fetch artist info
     const artistInfo: ArtistFull = await fetchFromSpotify(
         `https://api.spotify.com/v1/artists/${artistId}?market=DK`
     );
 
-    console.log(artistInfo)
-
+    // Fetch top tracks
     const topTracksData: { tracks: TrackFull[] } = await fetchFromSpotify(
         `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=DK`
     );
     const topTracks: TrackFull[] = topTracksData.tracks || [];
 
+    // Map group keys to readable section titles
+    const groupTitles: Record<string, string> = {
+        album: "Albums",
+        single: "Singles",
+        compilation: "Compilations",
+        appears_on: "Appears On",
+    };
+
     return (
         <div className="flex flex-col gap-8">
-            <figure className="relative -mx-4 -mt-4">
+            {/* Artist Header */}
+            <figure className="relative -m-4">
                 {artistInfo.images?.[0] && (
                     <Image
                         src={artistInfo.images[0].url}
@@ -44,44 +59,56 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
                     />
                 )}
                 <div className="absolute inset-0 rounded-2xl bg-iplay-black/50 backdrop-blur-sm">
-                    <hgroup className="flex flex-col gap-2 absolute bottom-0 p-4">
-                        <h1 className=" font-bold text-6xl font-poppins">{artistInfo.name}</h1>
-                        <p className="font-dm-sans">{artistInfo.followers.total  > 0 && abbreviateNumber(artistInfo.followers.total)} followers</p>
+                    <hgroup className="flex flex-col gap-1 absolute bottom-0 p-4">
+                        <h1 className="font-bold text-6xl font-poppins">{artistInfo.name}</h1>
+                        <p className="font-dm-sans">
+                            {artistInfo.followers.total > 0 && abbreviateNumber(artistInfo.followers.total)} followers
+                        </p>
                     </hgroup>
-
                 </div>
             </figure>
 
-
-
-
-
+            {/* Top Tracks */}
             {topTracks.length > 0 && (
-                <section>
-                    <h2 className="font-bold text-xl mb-2 font-poppins">Top Tracks</h2>
-                    <ul className="flex flex-col gap-1">
-                        {topTracks.map((track) => (
-                            <li key={track.id}>
-                                {track.name} {track.album?.name && <>({track.album.name})</>}
-                            </li>
-                        ))}
-                    </ul>
-                </section>
+                <TrackList
+                    title="Popular songs"
+                    discs={[
+                        {
+                            discNumber: 1,
+                            tracks: topTracks,
+                        },
+                    ]}
+                />
             )}
 
-            {albums.length > 0 && (
-                <section>
-                    <h2 className="font-bold text-xl mb-2">Albums</h2>
-                    <ul className="flex flex-col gap-1">
-                        {albums.map((album) => (
-                            <li key={album.id}>
-                                <Link href={`/album/${album.id}`} className="hover:underline">
-                                    {album.name} ({album.release_date?.substring(0, 4)})
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
+            {/* Albums / Singles / Compilations / Appears On */}
+            {Object.entries(albumsByGroup).map(([group, items]) =>
+                items.length > 0 ? (
+                    <MediaSection key={group} title={groupTitles[group] || group} isLoading={false}>
+                        <MediaGrid
+                            variant="horizontal"
+                            items={items.map<MediaGridItem>((album: AlbumFull) => ({
+                                id: album.id,
+                                title: album.name,
+                                images: album.images?.[0]
+                                    ? [
+                                        {
+                                            url: album.images[0].url,
+                                            width: album.images[0].width,
+                                            height: album.images[0].height,
+                                            alt: album.name,
+                                        },
+                                    ]
+                                    : undefined,
+                                href: `/album/${album.id}`,
+                                type: "album",
+                                meta: album.release_date ? formatDate(album.release_date, "day") : undefined,
+                            }))}
+                            loadingShape="wide"
+                            minLoadingMs={0}
+                        />
+                    </MediaSection>
+                ) : null
             )}
         </div>
     );

@@ -5,7 +5,7 @@ import { handpickedGenres } from "@/app/_data/static";
 
 export default function AllGenreSection() {
     return (
-        <MediaSection title="Browser genres" isLoading={false}>
+        <MediaSection title="Browse genres" isLoading={false}>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
                 {handpickedGenres.map((genre) => (
                     <GenrePill

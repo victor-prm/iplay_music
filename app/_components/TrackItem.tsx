@@ -3,24 +3,14 @@
 import { useEffect, useRef } from "react";
 import MediaFigure from "./media_comps/MediaFigure";
 import { spotifyImagesToMediaImages } from "@/app/_utils/helpers";
-import type { TrackRowProps, MediaImage, UpToFour } from "@/types/components";
+import type { TrackRowProps, MediaImage } from "@/types/components";
 
 export default function TrackItem({ track, index, highlighted }: TrackRowProps) {
   const ref = useRef<HTMLLIElement>(null);
-
   const { name, album, artists } = track;
 
-  // Convert to UpToFour<MediaImage>
-  const images: UpToFour<MediaImage> = (
-    (spotifyImagesToMediaImages(album?.images, name) ?? [])
-      .slice(0, 4)
-      .map(img => ({
-        url: img.url,
-        alt: img.alt ?? name,
-        width: img.width,
-        height: img.height,
-      }))
-  ) as UpToFour<MediaImage>;
+  // Take only the first image from the album
+  const image: MediaImage | undefined = spotifyImagesToMediaImages(album?.images, name)?.[0];
 
   useEffect(() => {
     if (highlighted && ref.current) {
@@ -31,19 +21,24 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
   return (
     <li
       ref={ref}
-      className={`flex items-center gap-3 p-2 rounded-sm transition-colors ${
-        highlighted ? "bg-iplay-pink/20 ring-2 ring-iplay-pink" : ""
-      }`}
+      className={`flex items-center gap-2 p-2 transition-colors
+        even:bg-iplay-white/5
+        ${highlighted ? "bg-iplay-pink/20 ring-2 ring-iplay-pink" : ""
+        }`}
     >
-      {index != null && (
-        <span className="w-6 text-right opacity-50">{index}</span>
-      )}
-
-      <div className="size-10 overflow-hidden rounded-sm">
-        <MediaFigure images={images} />
+      <div className="flex size-10 justify-center items-center h-full">
+        {index != null && (
+          <span className="opacity-50">{index}</span>
+        )}
       </div>
 
-      <div className="flex flex-col min-w-0">
+      {image && (
+        <div className="size-10 overflow-hidden rounded-sm font-poppins">
+          <MediaFigure images={[image]} /> {/* wrap in array */}
+        </div>
+      )}
+
+      <div className="flex flex-col min-w-0 font-dm-sans">
         <span className="truncate">{name}</span>
         <small className="opacity-50 truncate">
           {artists?.map(a => a.name).join(" • ")}
