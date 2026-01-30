@@ -8,21 +8,21 @@ import { myCategories } from "@/app/_data/static";
 import { formatGenreQuery } from "@/app/_utils/helpers";
 import type { UpToFour, MediaImage } from "@/types/components";
 
-const PLACEHOLDER_COUNT = 12;
+const PLACEHOLDER_COUNT = 6;
 
 const placeholders: MediaGridItem[] = Array.from(
   { length: PLACEHOLDER_COUNT },
   (_, i) => ({
     id: `genre-slot-${i}`,
     title: "",
-    images: undefined, 
+    images: undefined,
     meta: null,
     href: "#",
     type: "genre",
   })
 );
 
-export default function GenreSection() {
+export default function FeaturedGenreSection() {
   const [items, setItems] = useState<MediaGridItem[]>(placeholders);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,7 +48,7 @@ export default function GenreSection() {
             .slice(0, 4) as UpToFour<MediaImage>;
 
           return {
-            id: cat, // data id (not React key)
+            id: cat,
             title: formatGenreQuery(cat),
             images,
             meta: (
@@ -85,7 +85,7 @@ export default function GenreSection() {
   }, []);
 
   return (
-    <MediaSection title="Browse genres" isLoading={isLoading}>
+    <MediaSection title="Discover genres" isLoading={isLoading}>
       <MediaGrid items={items} loadingShape="wide" minLoadingMs={0} />
     </MediaSection>
   );

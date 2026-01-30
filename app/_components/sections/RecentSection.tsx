@@ -60,7 +60,7 @@ export default async function RecentSection() {
   const items: MediaGridItem[] = dedupedAlbums
     .filter(album => {
       const artist = artistMap[album.artists[0].name];
-      return artist?.popularity >= 50;
+      return artist?.popularity >= 40;
     })
     .map(album => ({
       id: album.id,

@@ -4,7 +4,7 @@ import MediaSection from "../media_comps/MediaSection";
 import { fetchFromSpotify } from "@/app/_lib/dal";
 import type { UpToFour, MediaImage } from "@/types/components";
 
-const ERAS = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020];
+const ERAS = [2020, 2010, 2000, 1990, 1980, 1970, 1960, 1950]
 const TARGET_ARTISTS_PER_ERA = 3;
 
 export default async function EraSection() {
@@ -80,7 +80,6 @@ export default async function EraSection() {
       <MediaGrid
         items={items.length ? items : placeholders}
         loadingShape="wide"
-        variant="horizontal"
       />
     </MediaSection>
   );

@@ -3,7 +3,6 @@ import { ImageObject } from "@/types/spotify";
 // Color palette
 const COLORS = [
   "--color-iplay-grape",
-  "--color-iplay-black",
   "--color-iplay-white",
   "--color-iplay-pink",
   "--color-iplay-coral",
