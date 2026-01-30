@@ -28,18 +28,36 @@ export default function MediaFigure({
   loading = false,
   fillContainer = false,
 }: MediaFigureProps) {
-  // --- Placeholder / fallback ---
-  if (!images || images.length === 0) {
+  const hasImages = !!images && images.length > 0;
+
+  // Hooks MUST always run
+  const [loaded, setLoaded] = useState<boolean[]>(
+    () => new Array(images?.length ?? 0).fill(false)
+  );
+
+  useEffect(() => {
+    if (hasImages) {
+      setLoaded(new Array(images!.length).fill(false));
+    }
+  }, [hasImages, images?.length]);
+
+  useEffect(() => {
+    if (onImagesLoaded && hasImages && loaded.every(Boolean)) {
+      onImagesLoaded();
+    }
+  }, [loaded, hasImages, onImagesLoaded]);
+
+  // ---- FALLBACK RENDER ----
+  if (!hasImages) {
     let Icon = FaRegUser;
     if (fallbackType === "album") Icon = FaCompactDisc;
     else if (fallbackType === "playlist") Icon = FaMusic;
 
-    // Only apply aspect ratio during loading
-    let aspectClass = "";
+    let aspectClass = "aspect-square";
+
     if (loading) {
       if (loadingShape === "wide") aspectClass = "aspect-[4/3]";
       else if (loadingShape === "tall") aspectClass = "aspect-[3/4]";
-      else aspectClass = "aspect-square";
     }
 
     return (
@@ -57,28 +75,7 @@ export default function MediaFigure({
     );
   }
 
-  // --- Images ---
-  const [loaded, setLoaded] = useState<boolean[]>(
-    () => images?.map(() => false) || []
-  );
-
-  // Reset loaded state if images array changes
-  useEffect(() => {
-    setLoaded(images?.map(() => false) || []);
-  }, [images]);
-
-  const handleLoad = (index: number) => {
-    setLoaded(prev => {
-      const next = [...prev];
-      next[index] = true;
-      return next;
-    });
-  };
-
-  useEffect(() => {
-    if (onImagesLoaded && loaded.every(Boolean)) onImagesLoaded();
-  }, [loaded, onImagesLoaded]);
-
+  // ---- IMAGE GRID ----
   let gridColsClass = "";
   if (images.length === 2) gridColsClass = "grid-cols-2";
   else if (images.length === 3) gridColsClass = "grid-cols-3";
@@ -91,7 +88,7 @@ export default function MediaFigure({
     >
       {images.map((img, i) => (
         <div
-          key={i}
+          key={img.url}
           className="relative w-full overflow-hidden"
           style={{
             aspectRatio: loading ? undefined : "1 / 1",
@@ -103,10 +100,18 @@ export default function MediaFigure({
             alt={img.alt ?? ""}
             width={img.width ?? 512}
             height={img.height ?? 512}
-            className={`object-cover w-full h-full transition-all duration-500 ease-out
+            className={`
+              object-cover w-full h-full transition-all duration-500 ease-out
               ${loaded[i] ? "opacity-100 scale-100 blur-0" : "opacity-0 scale-95 blur-sm"}
-              ${loaded[i] && applyGrayscale ? "grayscale" : ""}`}
-            onLoad={() => handleLoad(i)}
+              ${loaded[i] && applyGrayscale ? "grayscale" : ""}
+            `}
+            onLoad={() =>
+              setLoaded(prev => {
+                const next = [...prev];
+                next[i] = true;
+                return next;
+              })
+            }
             loading="lazy"
           />
         </div>

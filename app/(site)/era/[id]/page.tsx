@@ -9,17 +9,15 @@ interface EraPageProps {
 const PAGE_SIZE = 36;
 
 export default async function EraPage({ params }: EraPageProps) {
-  // ✅ Await params first
   const resolvedParams = await params;
-  const startYear = Number(resolvedParams.id);
+  const eraId = resolvedParams.id;
+  if (!eraId) return <p>Invalid era</p>;
 
-  if (!resolvedParams.id || Number.isNaN(startYear)) {
-    return <p>Invalid era</p>;
-  }
-
+  const startYear = parseInt(eraId, 10);
+  if (isNaN(startYear)) return <p>Invalid era</p>;
   const endYear = startYear + 9;
 
-  // Step 1: fetch first batch of albums for the decade
+  // Step 1: fetch albums for the decade
   const data = await fetchFromSpotify(
     `https://api.spotify.com/v1/search?q=${encodeURIComponent(
       `year:${startYear}-${endYear}`
@@ -29,7 +27,7 @@ export default async function EraPage({ params }: EraPageProps) {
   if (!data.albums.items.length) {
     return (
       <MediaSection title={`Artists from the ${startYear}s`}>
-        <p className="text-sm text-iplay-white/50">No artists found.</p>
+        <p className="text-sm text-iplay-white/50">No artists found for this era.</p>
       </MediaSection>
     );
   }

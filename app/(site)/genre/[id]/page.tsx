@@ -25,6 +25,8 @@ export default async function GenrePage({ params }: GenrePageProps) {
     PAGE_SIZE // limit per page
   );
 
+  console.log(initialArtists)
+
   if (!initialArtists.length) {
     return (
       <MediaSection title={`Popular ${formatGenreQuery(genreSlug)} artists`}>

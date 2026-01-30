@@ -2,6 +2,7 @@
 /// <reference types="spotify-api" />
 
 import { AlbumFull, TrackFull, ArtistFull } from "@/types/spotify";
+import { abbreviateNumber } from "@/app/_utils/helpers";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +20,7 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
 
     const albums: AlbumFull[] = await getAllAlbumsForArtist(artistId, ["album"]);
 
-    const artistInfo:  ArtistFull  = await fetchFromSpotify(
+    const artistInfo: ArtistFull = await fetchFromSpotify(
         `https://api.spotify.com/v1/artists/${artistId}?market=DK`
     );
 
@@ -32,17 +33,28 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
 
     return (
         <div className="flex flex-col gap-8">
-            {artistInfo.images?.[0] && (
-                <Image
-                    src={artistInfo.images[0].url}
-                    alt={artistInfo.name}
-                    width={artistInfo.images[0].width}
-                    height={artistInfo.images[0].height}
-                    className="rounded-md"
-                />
-            )}
+            <figure className="relative -mx-4 -mt-4">
+                {artistInfo.images?.[0] && (
+                    <Image
+                        src={artistInfo.images[0].url}
+                        alt={artistInfo.name}
+                        width={artistInfo.images[0].width}
+                        height={artistInfo.images[0].height}
+                        className="w-full max-h-[40vh] rounded-2xl object-cover object-[0_25%]"
+                    />
+                )}
+                <div className="absolute inset-0 rounded-2xl bg-iplay-black/50 backdrop-blur-sm">
+                    <hgroup className="absolute bottom-0 p-4">
+                        <h1 className=" font-bold text-6xl font-poppins">{artistInfo.name}</h1>
+                        <p className="font-dm-sans">{artistInfo.followers.total  > 0 && abbreviateNumber(artistInfo.followers.total)} followers</p>
+                    </hgroup>
 
-            <h1 className="font-bold text-2xl">{artistInfo.name}</h1>
+                </div>
+            </figure>
+
+
+
+
 
             {topTracks.length > 0 && (
                 <section>

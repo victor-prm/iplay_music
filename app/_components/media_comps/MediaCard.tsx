@@ -18,8 +18,7 @@ export default function MediaCard({
   className = "",
   loadingShape = "square",
 }: MediaCardPropsExtended) {
-  const hasImages = images && images.length > 0;
-  const loading = !hasImages; // true only if no images
+  const loading = images === undefined;
 
   let aspectClass = "aspect-square";
   if (loading) {
