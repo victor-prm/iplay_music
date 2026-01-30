@@ -16,6 +16,7 @@ export default function ArtistGridEra({ startYear, initialAlbums, pageSize }: Pr
   const [offset, setOffset] = useState(initialAlbums.length);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [initialLoaded, setInitialLoaded] = useState(false);
 
   const endYear = startYear + 9;
 
@@ -43,6 +44,7 @@ export default function ArtistGridEra({ startYear, initialAlbums, pageSize }: Pr
       const full = await loadArtistsFromAlbums(initialAlbums);
       full.sort((a, b) => (b.followers?.total ?? 0) - (a.followers?.total ?? 0));
       setArtists(full);
+      setInitialLoaded(true); // mark initial load complete
     };
 
     if (!artists.length) {
@@ -91,13 +93,13 @@ export default function ArtistGridEra({ startYear, initialAlbums, pageSize }: Pr
     meta: `${artist.followers?.total.toLocaleString()} followers`,
     images: artist.images?.[0]
       ? [
-          {
-            url: artist.images[0].url,
-            width: artist.images[0].width,
-            height: artist.images[0].height,
-            alt: `${artist.name} image`,
-          },
-        ]
+        {
+          url: artist.images[0].url,
+          width: artist.images[0].width,
+          height: artist.images[0].height,
+          alt: `${artist.name} image`,
+        },
+      ]
       : [],
   }));
 
@@ -105,15 +107,19 @@ export default function ArtistGridEra({ startYear, initialAlbums, pageSize }: Pr
     <>
       <MediaGrid items={items.map(item => ({ ...item, loading: false }))} />
 
-      {hasMore && (
+      {initialLoaded && hasMore && (
         <div className="flex justify-center mt-6">
-          <button
-            onClick={loadMore}
-            disabled={loading}
-            className="px-4 py-2 rounded-md bg-iplay-white/10 hover:bg-iplay-white/20 disabled:opacity-50"
-          >
-            {loading ? "Loading…" : "Load more"}
-          </button>
+          {!loading && (
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="px-3 py-1.5 rounded-xl bg-iplay-white/10
+              border border-iplay-white/20 font-dm-sans text-sm
+            hover:bg-iplay-white/20 disabled:opacity-50"
+            >
+              Load more
+            </button>
+          )}
         </div>
       )}
     </>

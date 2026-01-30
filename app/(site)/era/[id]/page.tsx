@@ -34,7 +34,7 @@ export default async function EraPage({ params }: EraPageProps) {
 
   return (
     <MediaSection title={`Artists from the ${startYear}s`}>
-      <p className="text-sm text-iplay-white/60">
+      <p className="text-sm text-iplay-white/60 font-dm-sans">
         Showing {data.albums.items.length} results
       </p>
 

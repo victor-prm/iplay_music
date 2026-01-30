@@ -3,6 +3,7 @@ import AllGenreSection from "../_components/sections/AllGenreSection";
 import RecentSection from "@/app/_components/sections/RecentSection";
 import UserGreeting from "../_components/UserGreeting";
 import EraSection from "../_components/sections/EraSection";
+import CountrySection from "../_components/sections/CountrySection";
 
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
       <AllGenreSection />
       <FeaturedGenreSection />
       <EraSection />
+      <CountrySection />
     </>
   );
 }
