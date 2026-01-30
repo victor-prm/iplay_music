@@ -3,6 +3,7 @@
 import MediaGrid, { MediaGridItem } from "@/app/_components/media_comps/MediaGrid";
 import type { UpToFour, MediaImage } from "@/types/components";
 import type { ArtistFull } from "@/types/spotify";
+import { abbreviateNumber } from "@/app/_utils/helpers";
 
 interface Props {
     initialArtists: ArtistFull[];
@@ -15,7 +16,7 @@ export default function ArtistGridGenre({ initialArtists }: Props) {
         title: artist.name,
         href: `/artist/${artist.id}`,
         type: "artist",
-        meta: `${artist.followers?.total.toLocaleString()} followers`,
+        meta: `${abbreviateNumber(artist.followers?.total)} followers`,
         images: artist.images?.[0]
             ? ([{
                 url: artist.images[0].url,

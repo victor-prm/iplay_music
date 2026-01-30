@@ -30,14 +30,14 @@ export default async function GenrePage({ params }: GenrePageProps) {
   if (!initialArtists.length) {
     return (
       <MediaSection title={`Popular ${formatGenreQuery(genreSlug)} artists`}>
-        <p className="text-sm text-iplay-white/50">No artists found for this genre.</p>
+        <p className="text-sm text-iplay-white/60 font-dm-sans">No artists found for this genre.</p>
       </MediaSection>
     );
   }
 
   return (
     <MediaSection title={`Popular ${formatGenreQuery(genreSlug)} artists`}>
-      <p className="text-sm text-iplay-white/60">
+      <p className="text-sm text-iplay-white/60 font-dm-sans">
         Showing {initialArtists.length} result{initialArtists.length > 1 ? "s" : ""}
       </p>
 

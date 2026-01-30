@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import MediaGrid, { MediaGridItem } from "@/app/_components/media_comps/MediaGrid";
 import { fetchFromSpotify } from "@/app/_lib/dal";
+import { abbreviateNumber } from "@/app/_utils/helpers";
 
 interface Props {
   startYear: number;
@@ -90,7 +91,7 @@ export default function ArtistGridEra({ startYear, initialAlbums, pageSize }: Pr
     title: artist.name,
     href: `/artist/${artist.id}`,
     type: "artist",
-    meta: `${artist.followers?.total.toLocaleString()} followers`,
+    meta: `${abbreviateNumber(artist.followers?.total)} followers`,
     images: artist.images?.[0]
       ? [
         {
