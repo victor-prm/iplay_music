@@ -60,17 +60,23 @@ export default function MediaCard({
         </figure>
 
         <div className="min-h-12">
-          <h2 className="text-md font-poppins font-bold line-clamp-1">
-            {title}
-          </h2>
+          {!loading ? (
+            <h2 className="text-md font-poppins font-bold line-clamp-1">
+              {title}
+            </h2>
+          ) : (
+            <div className="h-4 bg-white/10 w-32 rounded-sm mb-1" />
+          )}
 
-          {!loading && meta && (
+          {!loading && meta ? (
             <div className="text-xs opacity-70 flex flex-wrap items-center gap-2 font-dm-sans">
               {meta}
             </div>
-          )}
+          ) : loading ? (
+            <div className="h-3 bg-white/10 w-56 rounded-sm" />
+          ) : null}
         </div>
       </div>
-    </Link>
+    </Link >
   );
 }

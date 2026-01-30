@@ -111,7 +111,7 @@ export default function MediaGrid({
               href={item.href || "#"}
               type={item.type || "album"}
               meta={item.meta ?? null}
-              images={item.images ?? []}
+              images={item.images}
               loadingShape={loadingShape}
             />
           </li>

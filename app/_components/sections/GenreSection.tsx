@@ -13,9 +13,9 @@ const PLACEHOLDER_COUNT = 12;
 const placeholders: MediaGridItem[] = Array.from(
   { length: PLACEHOLDER_COUNT },
   (_, i) => ({
-    id: `genre-slot-${i}`, // STABLE keys
+    id: `genre-slot-${i}`,
     title: "",
-    images: [] as UpToFour<MediaImage>,
+    images: undefined, 
     meta: null,
     href: "#",
     type: "genre",
