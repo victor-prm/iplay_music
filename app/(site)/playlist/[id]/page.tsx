@@ -50,8 +50,7 @@ export default async function PlaylistPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <MediaHero images={playlist.image}>
-        <h1 className="text-5xl md:text-6xl font-bold">{playlist.name}</h1>
+      <MediaHero title={playlist.name} images={playlist.image}>
         <p className="opacity-70 font-dm-sans">
           By {playlist.ownerName} • {playlist.tracks.total} tracks
         </p>

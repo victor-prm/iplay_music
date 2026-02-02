@@ -13,6 +13,8 @@ export default async function AlbumPage({ params, searchParams }: AlbumPageProps
   const { id: albumId } = await params;
   const { highlight: highlightId } = searchParams ? await searchParams : { highlight: undefined };
 
+  
+
   if (!albumId) return <p>No album ID provided.</p>;
 
   // Fetch full album
@@ -41,10 +43,11 @@ export default async function AlbumPage({ params, searchParams }: AlbumPageProps
     .sort((a, b) => a - b)
     .map(discNumber => ({ discNumber, tracks: discsMap[discNumber] }));
 
+  console.log(album)
+
   return (
     <div className="flex flex-col gap-4">
-      <MediaHero images={album.images}>
-        <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold">{album.name}</h1>
+      <MediaHero title={album.name} images={album.images}>
         {album.release_date && (
           <p className="text-sm opacity-70 font-dm-sans">
             Released: {formatDate(album.release_date, album.release_date_precision)}

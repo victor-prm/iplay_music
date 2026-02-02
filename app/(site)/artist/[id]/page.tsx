@@ -42,8 +42,7 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Artist Hero */}
-      <MediaHero images={artistInfo.images}>
-        <h1 className="font-bold text-6xl font-poppins">{artistInfo.name}</h1>
+      <MediaHero title={artistInfo.name} images={artistInfo.images}>
         <p className="font-dm-sans opacity-70">
           {artistInfo.followers.total > 0 && abbreviateNumber(artistInfo.followers.total)} followers
         </p>

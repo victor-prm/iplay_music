@@ -23,7 +23,7 @@ export default function SearchResult({ res, onSelect }: SearchResultProps) {
     <li className="p-1 odd:bg-white/10 rounded-sm my-1">
       <Link href={href} onClick={onSelect}>
         <article className="flex items-center gap-2">
-          <div className="size-12 overflow-hidden rounded-sm border border-white/10">
+          <div className="size-12 shrink-0 overflow-hidden rounded-sm border border-white/10">
             <MediaFigure images={firstImage} />
           </div>
 
