@@ -6,23 +6,22 @@ import { spotifyImagesToMediaImages } from "@/app/_utils/helpers";
 import type { TrackRowProps, MediaImage } from "@/types/components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaPlay } from "react-icons/fa";
-
+import { FaPlay, FaCompactDisc } from "react-icons/fa";
+import { useSpotifyPlayer } from "./SpotifyPlayerProvider";
 
 export default function TrackItem({ track, index, highlighted }: TrackRowProps) {
   const ref = useRef<HTMLLIElement>(null);
-  const pathname = usePathname(); // current path
+  const pathname = usePathname();
   const { name, album, artists } = track;
   const [hovered, setHovered] = useState(false);
 
-  // Only link to album if we're NOT already on an album page
   const linkToAlbum = album?.id && !pathname?.startsWith("/album");
-
-  // Take only the first image from the album
   const image: MediaImage | undefined = spotifyImagesToMediaImages(album?.images, name)?.[0];
-
-  // Only show album image if NOT on album page
   const showAlbumImage = !pathname?.startsWith("/album") && image;
+
+  const { playTrack, currentTrackId, isPaused } = useSpotifyPlayer();
+
+  const isPlaying = currentTrackId === track.id && !isPaused;
 
   useEffect(() => {
     if (highlighted && ref.current) {
@@ -40,12 +39,27 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Index / Play Icon */}
+      {/* Index / Play Icon / Playing */}
       <div className="flex size-10 justify-center items-center h-full relative shrink-0">
-        {!hovered && index != null && <span className="opacity-50">{index}</span>}
+        {!hovered && index != null && !isPlaying && <span className="opacity-50">{index}</span>}
+
         {hovered && (
-          <div className="absolute inset-0 flex justify-center items-center">
+          <div
+            className="absolute inset-0 flex justify-center items-center cursor-pointer"
+            onClick={() => {
+              if (track.uri) {
+                playTrack(track.uri);
+                console.log("Playing:", name)
+              }
+            }}
+          >
             <FaPlay className="size-3 text-iplay-white" />
+          </div>
+        )}
+
+        {isPlaying && !hovered && (
+          <div className="absolute inset-0 flex justify-center items-center animate-spin">
+            <FaCompactDisc className="size-4 text-iplay-white" />
           </div>
         )}
       </div>
@@ -58,7 +72,6 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
       )}
 
       <div className="flex flex-col min-w-0 font-dm-sans">
-        {/* Track name */}
         <span className="truncate">
           {linkToAlbum ? (
             <Link
@@ -72,7 +85,6 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
           )}
         </span>
 
-        {/* Artists */}
         <small className="opacity-50 truncate">
           {artists?.map((a, i) => (
             <span key={a.id ?? a.name}>

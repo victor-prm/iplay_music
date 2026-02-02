@@ -1,18 +1,27 @@
 // app/(site)/layout.tsx
 import Header from "../_components/Header";
 import Footer from "../_components/Footer";
+import SpotifyClientWrapper from "./SpotifyClientWrapper";
+import { cookies } from "next/headers";
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("IPM_access_token")?.value ?? "";
+
   return (
     <>
       <Header />
-      <main className="flex flex-col gap-12 container p-2 mx-auto pt-16 pb-40 h-full max-w-300">
-        {children}
-      </main>
+
+      <SpotifyClientWrapper token={token}>
+        <main className="flex flex-col gap-12 container p-2 mx-auto pt-16 pb-40 h-full max-w-300">
+          {children}
+        </main>
+      </SpotifyClientWrapper>
+
       <Footer />
     </>
   );
