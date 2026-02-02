@@ -1,7 +1,7 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa";
 
 export default function BackButton() {
     const router = useRouter();
@@ -22,7 +22,7 @@ export default function BackButton() {
             }}
             className="p-2 rounded cursor-pointer"
         >
-            <FaArrowLeft />
+            <FaChevronLeft />
         </button>
     );
 }

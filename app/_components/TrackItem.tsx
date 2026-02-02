@@ -16,7 +16,11 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
   const { name, album, artists } = track;
   const [hovered, setHovered] = useState(false);
 
-  const linkToAlbum = album?.id && !pathname?.startsWith("/album");
+  const linkToAlbum =
+    album?.id &&
+    !pathname.startsWith(`/album/${album.id}`);
+  console.log(linkToAlbum)
+
   const image: MediaImage | undefined = spotifyImagesToMediaImages(album?.images, name)?.[0];
   const showAlbumImage = !pathname?.startsWith("/album") && image;
 
@@ -46,6 +50,13 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
     }
   };
 
+  const formatDuration = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
   return (
     <li
       ref={ref}
@@ -55,39 +66,38 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Clickable overlay for the entire item except links */}
-      <div
-        className="absolute inset-0 cursor-pointer z-0"
-        onClick={handlePlayPause}
-      >
-        {hovered && (
-          <div className="absolute inset-0 bg-iplay-white/1 pointer-events-none transition-colors" />
-        )}
-      </div>
+      {/* Hover background only */}
+      {hovered && (
+        <div className="absolute inset-0 bg-iplay-white/10 pointer-events-none transition-colors" />
+      )}
 
       {/* Index / Disc / Play-Pause */}
       <div className="flex size-10 justify-center items-center h-full relative shrink-0 z-10">
         {hovered ? (
-          // Hover state fully overrides
           <div
             className="absolute inset-0 flex justify-center items-center z-20"
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePlayPause();
-            }}
           >
             {isCurrentTrack && !isPaused ? (
-              <FaPause className="size-3 text-iplay-white" />
+              <FaPause
+                className="size-3 text-iplay-white cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePlayPause();
+                }}
+              />
             ) : (
-              <FaPlay className="size-3 text-iplay-white" />
+              <FaPlay
+                className="size-3 text-iplay-white cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePlayPause();
+                }}
+              />
             )}
           </div>
         ) : (
-          // Non-hover: index/disc states
           <>
-            {!isCurrentTrack && (
-              <span className="opacity-50">{index}</span>
-            )}
+            {!isCurrentTrack && <span className="opacity-50">{index}</span>}
 
             {isCurrentTrack && (
               <FaCompactDisc
@@ -108,25 +118,18 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
 
       {/* Track details */}
       <div className="flex flex-col min-w-0 font-dm-sans z-10">
-        <span className={`truncate ${isCurrentTrack && "text-iplay-coral"}`}>
-          {linkToAlbum ? (
-            <Link
-              href={`/album/${album.id}?highlight=${track.id}`}
-              className={``}
-            >
-              {name}
-            </Link>
-          ) : (
-            name
-          )}
+        {/* Track name */}
+        <span className={`truncate ${isCurrentTrack ? "text-iplay-coral" : ""}`}>
+          {name}
         </span>
 
+        {/* Artists */}
         <small className="opacity-50 truncate">
           {artists?.map((a, i) => (
             <span key={a.id ?? a.name}>
               <Link
                 href={`/artist/${a.id}`}
-                className={`hover:underline relative z-20 ${isCurrentTrack && "text-iplay-coral"}`}
+                className={`hover:underline relative z-20 ${isCurrentTrack ? "text-iplay-coral" : ""}`}
               >
                 {a.name}
               </Link>
@@ -135,6 +138,25 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
           ))}
         </small>
       </div>
+
+      {/* Album & duration */}
+      <div className="flex gap-4 ml-auto items-center w-fit">
+        <small className="font-dm-sans text-sm">
+          {linkToAlbum ? (
+            <Link
+              href={`/album/${album.id}`}
+              className="hover:underline"
+            >
+              {track.album.name}
+            </Link>
+          ) : null}
+        </small>
+
+        <small className="font-dm-sans text-sm min-w-10">
+          {formatDuration(track.duration_ms)}
+        </small>
+      </div>
+
     </li>
   );
 }
