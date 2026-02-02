@@ -2,6 +2,7 @@ import TrackList from "@/app/_components/TrackList";
 import { fetchFromSpotify } from "@/app/_lib/dal";
 import type { Disc, AlbumFull, TrackFull } from "@/types/spotify";
 import { formatDate } from "@/app/_utils/helpers";
+import MediaHero from "@/app/_components/media_comps/MediaHero";
 
 interface AlbumPageProps {
   params: Promise<{ id: string }>;
@@ -15,20 +16,15 @@ export default async function AlbumPage({ params, searchParams }: AlbumPageProps
   if (!albumId) return <p>No album ID provided.</p>;
 
   // Fetch full album
-  const album = await fetchFromSpotify(
-    `https://api.spotify.com/v1/albums/${albumId}`
-  ) as AlbumFull;
+  const album = await fetchFromSpotify(`https://api.spotify.com/v1/albums/${albumId}`) as AlbumFull;
 
-  // The tracks array is TrackObjectSimplified[], so fetch full tracks in batches
+  // Fetch full tracks in batches
   const trackIds = album.tracks.items.map(t => t.id).filter(Boolean);
   let fullTracks: TrackFull[] = [];
 
-  // Spotify's Get Several Tracks endpoint accepts up to 50 IDs
   for (let i = 0; i < trackIds.length; i += 50) {
     const batch = trackIds.slice(i, i + 50).join(",");
-    const data = await fetchFromSpotify(
-      `https://api.spotify.com/v1/tracks?ids=${batch}`
-    ) as { tracks: TrackFull[] };
+    const data = await fetchFromSpotify(`https://api.spotify.com/v1/tracks?ids=${batch}`) as { tracks: TrackFull[] };
     fullTracks = fullTracks.concat(data.tracks);
   }
 
@@ -46,22 +42,16 @@ export default async function AlbumPage({ params, searchParams }: AlbumPageProps
     .map(discNumber => ({ discNumber, tracks: discsMap[discNumber] }));
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold">{album.name}</h1>
-      {album.release_date && (
-        <p className="text-sm opacity-70 font-dm-sans">
-          Released: {formatDate(album.release_date, album.release_date_precision)}
-        </p>
-      )}
-      {album.images?.[0] && (
-        <img
-          src={album.images[0].url}
-          alt={`Cover for ${album.name}`}
-          width={album.images[0].width}
-          height={album.images[0].height}
-          className="my-4 rounded-md"
-        />
-      )}
+    <div className="flex flex-col gap-4">
+      <MediaHero images={album.images}>
+        <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold">{album.name}</h1>
+        {album.release_date && (
+          <p className="text-sm opacity-70 font-dm-sans">
+            Released: {formatDate(album.release_date, album.release_date_precision)}
+          </p>
+        )}
+      </MediaHero>
+
       <TrackList discs={discs} highlightId={highlightId} />
     </div>
   );

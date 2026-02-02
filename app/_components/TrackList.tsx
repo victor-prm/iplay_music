@@ -13,7 +13,7 @@ export default function TrackList({ discs, highlightId, title }: TrackListProps)
         </h2>
       )}
 
-      <div className="bg-iplay-grape/10 rounded-xl overflow-clip">
+      <div className="bg-iplay-grape/5 rounded-xl overflow-clip">
         {discs.map((disc) => (
           <div key={disc.discNumber}>
             {discs.length > 1 && (
