@@ -37,8 +37,8 @@ export default function MediaCard({
         `}
       >
         <figure
-          className={`w-full rounded-sm overflow-hidden relative
-          transition-transform duration-300 ease-out
+          className={`w-full rounded-md overflow-hidden relative
+          transition-transform duration-300 ease-out border border-iplay-white/5
           group-hover:scale-[1.01]  
           ${loading ? aspectClass : ""}`}
         >
@@ -61,7 +61,7 @@ export default function MediaCard({
 
         <div className="min-h-12">
           {!loading ? (
-            <h2 className="text-md font-poppins font-bold line-clamp-1">
+            <h2 className="text-sm font-poppins font-bold line-clamp-1 md:text-base">
               {title}
             </h2>
           ) : (
