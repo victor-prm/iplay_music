@@ -8,31 +8,24 @@ interface SpotifyPlayerContextValue {
   currentTrackId: string | null;
   isPaused: boolean;
   playTrack: (spotifyUri: string) => void;
+  playContext: (contextUri: string, offsetTrackUri?: string) => void;
   togglePlay: () => void;
 }
 
-const SpotifyPlayerContext =
-  createContext<SpotifyPlayerContextValue | undefined>(undefined);
+const SpotifyPlayerContext = createContext<SpotifyPlayerContextValue | undefined>(undefined);
 
 export function useSpotifyPlayer() {
   const ctx = useContext(SpotifyPlayerContext);
-  if (!ctx) {
-    throw new Error(
-      "useSpotifyPlayer must be used within a SpotifyPlayerProvider"
-    );
-  }
+  if (!ctx) throw new Error("useSpotifyPlayer must be used within a SpotifyPlayerProvider");
   return ctx;
 }
 
 interface ProviderProps {
   children: ReactNode;
-  token: string; // access token from your OAuth flow
+  token: string; // Spotify OAuth token
 }
 
-export default function SpotifyPlayerProvider({
-  children,
-  token,
-}: ProviderProps) {
+export default function SpotifyPlayerProvider({ children, token }: ProviderProps) {
   const [player, setPlayer] = useState<Spotify.Player | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
@@ -41,7 +34,7 @@ export default function SpotifyPlayerProvider({
   useEffect(() => {
     if (!token || typeof window === "undefined") return;
 
-    // Avoid injecting the SDK script multiple times
+    // Inject Spotify Web Playback SDK once
     if (!document.getElementById("spotify-player-sdk")) {
       const script = document.createElement("script");
       script.id = "spotify-player-sdk";
@@ -57,19 +50,14 @@ export default function SpotifyPlayerProvider({
         volume: 0.5,
       });
 
-      sdkPlayer.addListener(
-        "ready",
-        ({ device_id }: { device_id: string }) => {
-          setDeviceId(device_id);
-          console.log("Spotify Player Ready with device ID", device_id);
-        }
-      );
+      sdkPlayer.addListener("ready", ({ device_id }: { device_id: string }) => {
+        setDeviceId(device_id);
+        console.log("Spotify Player Ready with device ID", device_id);
+      });
 
       sdkPlayer.addListener("player_state_changed", (state: any) => {
         if (!state) return;
-        setCurrentTrackId(
-          state.track_window?.current_track?.id ?? null
-        );
+        setCurrentTrackId(state.track_window?.current_track?.id ?? null);
         setIsPaused(state.paused);
       });
 
@@ -82,20 +70,37 @@ export default function SpotifyPlayerProvider({
     };
   }, [token]);
 
-  const playTrack = (uri: string) => {
+  // Play a single track URI
+  const playTrack = (spotifyUri: string) => {
     if (!deviceId) return;
 
-    fetch(
-      `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ uris: [uri] }),
-      }
-    );
+    fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+      method: "PUT",
+      body: JSON.stringify({ uris: [spotifyUri] }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
+  // Play a context (album/playlist) and optionally start at a specific track
+  const playContext = (contextUri: string, offsetTrackUri?: string) => {
+    if (!deviceId) return;
+
+    const body: any = { context_uri: contextUri };
+    if (offsetTrackUri) {
+      body.offset = { uri: offsetTrackUri };
+    }
+
+    fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
   };
 
   const togglePlay = () => {
@@ -110,6 +115,7 @@ export default function SpotifyPlayerProvider({
         currentTrackId,
         isPaused,
         playTrack,
+        playContext,
         togglePlay,
       }}
     >

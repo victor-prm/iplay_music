@@ -1,4 +1,4 @@
-"use client";
+
 import { useSpotifyPlayer } from "./SpotifyPlayerProvider";
 import { useEffect, useState } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
@@ -40,7 +40,7 @@ export default function SpotifyGlobalPlayer() {
   if (!currentTrack) return null;
 
   return (
-    <div className="fixed bottom-12 left-0 right-0 bg-gray-900 text-white p-3 flex justify-between items-center shadow-lg z-50">
+    <div className="fixed bottom-11.5 left-0 right-0 bg-iplay-coral/50 text-white p-3 flex justify-between items-center shadow-lg z-50 backdrop-blur-xs border border-iplay-coral rounded-t-md">
       <div>
         <strong>{currentTrack.name}</strong> —{" "}
         {currentTrack.artists.map((a: any) => a.name).join(", ")}
