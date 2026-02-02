@@ -14,7 +14,7 @@ export interface ImageObject {
   width?: number;
 }
 
-export {};
+export { };
 
 declare global {
   interface Window {
@@ -35,6 +35,7 @@ declare global {
       connect(): Promise<boolean>;
       disconnect(): void;
       togglePlay(): Promise<void>;
+      seek(positionMs: number): Promise<void>;
       addListener(
         event: "ready" | "player_state_changed",
         callback: (state: any) => void
@@ -42,7 +43,7 @@ declare global {
     }
 
     const Player: {
-      new (options: PlayerInit): Player;
+      new(options: PlayerInit): Player;
     };
   }
 }
