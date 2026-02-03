@@ -1,3 +1,5 @@
+import "../icon.svg"
+
 export default function SiteLayout({
     children,
 }: {
