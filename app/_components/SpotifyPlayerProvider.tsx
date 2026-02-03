@@ -12,6 +12,8 @@ interface SpotifyPlayerContextValue {
     playTrack: (spotifyUri: string) => void;
     playContext: (contextUri: string, offsetTrackUri?: string) => void;
     togglePlay: () => void;
+    token: string;
+
 }
 
 const SpotifyPlayerContext = createContext<SpotifyPlayerContextValue | undefined>(undefined);
@@ -114,9 +116,8 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
         player?.togglePlay();
     };
 
-    return (
+    return(
         <SpotifyPlayerContext.Provider
-
             value={{
                 player,
                 deviceId,
@@ -127,6 +128,7 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
                 playTrack,
                 playContext,
                 togglePlay,
+                token, // include it here
             }}
         >
             {children}

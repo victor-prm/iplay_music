@@ -17,7 +17,7 @@ export default function TrackList({ discs, highlightId, title }: TrackListProps)
         {discs.map((disc) => (
           <div key={disc.discNumber}>
             {discs.length > 1 && (
-              <h3 className="flex items-end pl-14 text-2xl font-bold  h-12">
+              <h3 className="flex items-end pl-14 text-2xl font-bold  h-12 font-poppins">
                 Disc {disc.discNumber}
               </h3>
             )}

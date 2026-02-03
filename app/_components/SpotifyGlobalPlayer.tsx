@@ -3,13 +3,24 @@
 import { useSpotifyPlayer } from "./SpotifyPlayerProvider";
 import { useEffect, useState } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
-import { RiReplay10Fill, RiForward10Fill } from "react-icons/ri";
-
-
 import MediaFigure from "./media_comps/MediaFigure";
+import { UpToFour, MediaImage } from "@/types/components";
+
+async function getLastPlayback(token: string) {
+    const res = await fetch("https://api.spotify.com/v1/me/player", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!res.ok) return null;
+    if (res.status === 204) return null; // no active playback
+
+    return res.json();
+}
 
 export default function SpotifyGlobalPlayer() {
-    const { player, isPaused, togglePlay } = useSpotifyPlayer();
+    const { player, isPaused, togglePlay, token } = useSpotifyPlayer();
 
     const [currentTrack, setCurrentTrack] = useState<any>(null);
     const [positionMs, setPositionMs] = useState(0);
@@ -51,6 +62,27 @@ export default function SpotifyGlobalPlayer() {
             );
         };
     }, [player]);
+
+
+    /* ──────────────────────────────────────────────
+   1b. Fetch last known playback from Spotify
+   Ensures the global player has a track ready on load
+   ────────────────────────────────────────────── */
+    useEffect(() => {
+        if (!player) return;
+
+        (async () => {
+            const lastState = await getLastPlayback(token);
+            const track = lastState?.item;
+            if (track) {
+                setCurrentTrack(track);
+                setDurationMs(track.duration_ms);
+                setPositionMs(lastState.progress_ms ?? 0);
+            }
+        })();
+    }, [player, token]);
+
+
 
     /* ──────────────────────────────────────────────
        2. Sync playback → slider (when not seeking)
@@ -126,10 +158,17 @@ export default function SpotifyGlobalPlayer() {
         setPositionMs(basePositionMs);
     }, [isPaused, basePositionMs]);
 
-    if (!currentTrack) return null;
 
-    const image = (currentTrack.album.images[currentTrack.album.images.length - 1]) ?? "";
+    const lastImage = currentTrack?.album?.images?.[currentTrack.album.images.length - 1];
 
+    const image: UpToFour<MediaImage> = lastImage
+        ? [{
+            url: lastImage.url,
+            width: lastImage.width,
+            height: lastImage.height,
+            alt: currentTrack.name ?? "Track image",
+        }]
+        : [];
 
     return (
         <div
@@ -140,16 +179,16 @@ export default function SpotifyGlobalPlayer() {
         >
             <div className="mx-auto grid grid-cols-[1fr_0.5fr_1fr]">
                 {/* Track info */}
-                <div className="flex gap-1 min-w-0 justify-center items-center">
-                    <div className="size-9 rounded-sm shrink-0 overflow-hidden border-2 border-iplay-coral/50">
-                        <MediaFigure images={[image]} fillContainer />
+                <div className="flex gap-1 min-w-0 items-center">
+                    <div className="size-9 rounded-sm shrink-0 overflow-hidden border-1 border-iplay-coral/50">
+                        <MediaFigure images={image} fillContainer fallbackType="album" fallbackIconClassName="size-4 opacity-50" />
                     </div>
                     <div className="overflow-hidden flex flex-col gap-1 justify-center">
                         <strong className="truncate block font-poppins text-xs leading-tight">
-                            {currentTrack.name}
+                            {currentTrack?.name || "No track playing"}
                         </strong>
                         <small className="opacity-70 truncate block  text-xs font-dm-sans leading-none">
-                            {currentTrack.artists.map((a: any) => a.name).join(", ")}
+                            {currentTrack?.artists.map((a: any) => a.name).join(", ") || "-"}
                         </small>
                     </div>
 
