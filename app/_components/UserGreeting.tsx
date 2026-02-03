@@ -1,10 +1,15 @@
 // app/_components/Greeting.tsx
+/* "use client" */
+
 import { getCurrentUser } from "../_lib/dal";
 import MediaFigure from "./media_comps/MediaFigure";
 import { spotifyImagesToMediaImages } from "../_utils/helpers";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { MdMoneyOffCsred } from "react-icons/md";
 import { GiSevenPointedStar } from "react-icons/gi";
+import { TbLogout } from "react-icons/tb";
+import { logoutCurrentUser } from "../_lib/actions";
+
 
 import { UpToFour, MediaImage } from "@/types/components";
 import Image from "next/image";
@@ -44,7 +49,7 @@ export default async function UserGreeting() {
             </small>
           ) : (
             <small className="flex gap-1 items-center">
-              <MdMoneyOffCsred className="inline size-4 text-iplay-pink"/>
+              <MdMoneyOffCsred className="inline size-4 text-iplay-pink" />
               Free
             </small>
           )}
@@ -67,6 +72,20 @@ export default async function UserGreeting() {
           )}
         </p>
       </hgroup>
+      <form
+        action={logoutCurrentUser}
+        className="mt-auto ml-auto"
+      >
+        <button
+          type="submit"
+          className="
+          flex gap-1  items-center 
+          text-sm text-iplay-white/70 font-dm-sans"
+        >
+          Log out <TbLogout />
+        </button>
+      </form>
+
     </section>
   );
 }

@@ -78,8 +78,8 @@ export default function MediaGrid({
 
   const listClass =
     variant === "horizontal"
-      ? "grid grid-flow-col auto-cols-[clamp(172px,20vw,240px)] gap-3 overflow-x-auto pb-8 scroll-smooth snap-x snap-mandatory"
-      : "grid grid-cols-[repeat(auto-fill,minmax(clamp(172px,20vw,240px),1fr))] gap-x-2 gap-y-1";
+      ? "grid grid-flow-col auto-cols-[clamp(172px,20vw,240px)] gap-2 overflow-x-auto pb-8 scroll-smooth snap-x snap-mandatory"
+      : "grid grid-cols-[repeat(auto-fill,minmax(clamp(172px,20vw,240px),1fr))] gap-2";
 
   return (
     <div className="relative">

@@ -62,7 +62,7 @@ export default function MediaCard({
         <div className="min-h-12">
           {!loading ? (
             <h2 className="text-sm font-poppins font-bold line-clamp-1 md:text-base">
-              {title}
+              {type === "genre" ? title?.replaceAll(" and ", "&") : title}
             </h2>
           ) : (
             <div className="h-4 bg-white/10 w-32 rounded-sm mb-1" />

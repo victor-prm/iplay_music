@@ -21,7 +21,7 @@ export default function GenrePill({ genre, href }: GenrePillProps) {
                 className="grayscale-25 absolute opacity-75 inset-0 -z-1"
                 style={{ background: backroundGradient(genre) }}
             ></span>
-            {genre}
+            {genre?.replaceAll(" and ", "&")}
         </Link>
     );
 }
