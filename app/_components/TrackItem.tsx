@@ -19,7 +19,6 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
   const linkToAlbum =
     album?.id &&
     !pathname.startsWith(`/album/${album.id}`);
-  console.log(linkToAlbum)
 
   const image: MediaImage | undefined = spotifyImagesToMediaImages(album?.images, name)?.[0];
   const showAlbumImage = !pathname?.startsWith("/album") && image;
