@@ -132,35 +132,38 @@ export default function SpotifyGlobalPlayer() {
 
 
     return (
-        <div className="flex flex-col justify-between fixed container mx-auto max-w-120 bottom-11.5 left-[0%] right-0 bg-linear-to-tr from-iplay-coral/15 to-iplay-pink/15 text-white p-3 pb-2 gap-1 shadow-lg z-50 backdrop-blur-xs border border-iplay-coral/50 rounded-t-md">
-            {/* Track info */}
-            <div className="flex gap-2 min-w-0">
-                <div className="size-15 rounded-sm shrink-0 overflow-hidden border-2 border-iplay-coral/50">
-                    <MediaFigure images={[image]} fillContainer />
+        <div
+            className="p-1.5 gap-8 fixed bottom-12 left-0 right-0 
+             max-w-300 mx-auto
+             bg-linear-to-tr from-iplay-coral/15 to-iplay-pink/15 text-white 
+             z-50 backdrop-blur-md border border-iplay-coral/50 rounded-t-md"
+        >
+            <div className="mx-auto grid grid-cols-[1fr_0.5fr_1fr]">
+                {/* Track info */}
+                <div className="flex gap-1 min-w-0 justify-center items-center">
+                    <div className="size-9 rounded-sm shrink-0 overflow-hidden border-2 border-iplay-coral/50">
+                        <MediaFigure images={[image]} fillContainer />
+                    </div>
+                    <div className="overflow-hidden flex flex-col gap-1 justify-center">
+                        <strong className="truncate block font-poppins text-xs leading-tight">
+                            {currentTrack.name}
+                        </strong>
+                        <small className="opacity-70 truncate block  text-xs font-dm-sans leading-none">
+                            {currentTrack.artists.map((a: any) => a.name).join(", ")}
+                        </small>
+                    </div>
+
                 </div>
-                <div className="min-w-0 overflow-hidden">
-                    <strong className="truncate block font-poppins">
-                        {currentTrack.name}
-                    </strong>
-                    <small className="opacity-70 truncate block font-dm-sans">
-                        {currentTrack.artists.map((a: any) => a.name).join(", ")}
-                    </small>
-                </div>
+                {/* Play / pause */}
+                <button
+                    className="flex justify-center items-center p-1 rounded w-10 mx-auto cursor-pointer hover:bg-white/10"
+                    onClick={togglePlay}
+                >
+                    {isPaused ? <FaPlay /> : <FaPause />}
+                </button>
 
-            </div>
-
-
-            <div className="flex flex-col w-full items-center">
-
-
-
-                {/* Progress */}
-                <div className="flex w-full items-center gap-2 font-dm-sans">
-                    <small className="flex shrink-0 tabular-nums text-[0.625rem] w-15 justify-between">
-                        <span className="min-w-6.5">{formatTime(positionMs)}</span>
-                        <span className="opacity-60 font-bold">/</span>
-                        <span className="min-w-6.5 text-right">{formatTime(durationMs)}</span>
-                    </small>
+                <div className="flex w-full items-center gap-4 font-dm-sans pr-1">
+                    {/* Progress */}
                     <input
                         type="range"
                         min={0}
@@ -172,18 +175,14 @@ export default function SpotifyGlobalPlayer() {
                         onTouchEnd={handleSliderCommit}
                         className="w-full h-1 accent-iplay-coral cursor-grab click:cursor-grabbing"
                     />
-                    {/* Play / pause */}
-                    <button
-                        className="p-1 rounded cursor-pointer hover:bg-white/10"
-                        onClick={togglePlay}
-                    >
-                        {isPaused ? <FaPlay /> : <FaPause />}
-                    </button>
+                    <small className="flex shrink-0 tabular-nums text-[0.625rem] w-15 justify-between">
+                        <span className="min-w-6.5">{formatTime(positionMs)}</span>
+                        <span className="opacity-60 font-bold">/</span>
+                        <span className="min-w-6.5 text-right">{formatTime(durationMs)}</span>
+                    </small>
                 </div>
-
-
-
             </div>
+
         </div>
     );
 }
