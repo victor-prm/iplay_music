@@ -26,7 +26,7 @@ export default async function proxy(request: NextRequest) {
 
             if (response.ok) {
                 console.log("🔄 Access Token refreshed successfully");
-                
+
                 // Continue to the requested page
                 const nextResponse = NextResponse.next();
 
@@ -62,7 +62,7 @@ export default async function proxy(request: NextRequest) {
     if (!accessToken) {
         const baseUrl = process.env.BASE_URL || "http://127.0.0.1:3000";
         const loginUrl = `${baseUrl}/login`;
-        
+
         const response = NextResponse.redirect(loginUrl);
         response.cookies.set({
             name: "login_from",
@@ -81,6 +81,6 @@ export default async function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
-        "/((?!login|api/auth/callback|_next/static|_next/image|favicon.ico|\\.well-known).*)",
+        "/((?!login|api/auth/callback|_next/static|_next/image|favicon.ico|icon.svg|apple-touch-icon|manifest.webmanifest|\\.well-known).*)",
     ],
 };
