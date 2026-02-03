@@ -1,6 +1,4 @@
-// app/(site)/layout.tsx
 import Header from "../_components/Header";
-import Footer from "../_components/Footer";
 import SpotifyClientWrapper from "./SpotifyClientWrapper";
 import { cookies } from "next/headers";
 
@@ -21,8 +19,6 @@ export default async function SiteLayout({
           {children}
         </main>
       </SpotifyClientWrapper>
-
-      <Footer />
     </>
   );
 }

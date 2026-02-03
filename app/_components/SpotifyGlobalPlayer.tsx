@@ -6,6 +6,11 @@ import { FaPlay, FaPause } from "react-icons/fa";
 import MediaFigure from "./media_comps/MediaFigure";
 import { UpToFour, MediaImage } from "@/types/components";
 
+interface SpotifyGlobalPlayerProps {
+    setIsPlayerVisible?: (visible: boolean) => void;
+}
+
+
 async function getLastPlayback(token: string) {
     const res = await fetch("https://api.spotify.com/v1/me/player", {
         headers: {
@@ -18,10 +23,11 @@ async function getLastPlayback(token: string) {
     return res.json();
 }
 
-export default function SpotifyGlobalPlayer() {
-    const { player, deviceId, isPaused, token, currentTrackId } = useSpotifyPlayer();
-
+export default function SpotifyGlobalPlayer({ setIsPlayerVisible }: SpotifyGlobalPlayerProps) {
+    const { player, deviceId, isPaused, token } = useSpotifyPlayer();
     const [currentTrack, setCurrentTrack] = useState<any>(null);
+
+
     const [positionMs, setPositionMs] = useState(0);
     const [durationMs, setDurationMs] = useState(0);
     const [sliderValue, setSliderValue] = useState(0); // 0–100
@@ -125,12 +131,10 @@ export default function SpotifyGlobalPlayer() {
     const handlePlay = async () => {
         if (!player || !deviceId || !currentTrack) return;
 
-        if (currentTrack.id === currentTrackId) {
-            player.togglePlay();
-            return;
-        }
+        // Show the player if hidden
+        if (setIsPlayerVisible) setIsPlayerVisible(true);
 
-        // Load the track into the player without auto-playing
+        // Play the track
         await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
             method: "PUT",
             headers: {
@@ -188,7 +192,7 @@ export default function SpotifyGlobalPlayer() {
                         <strong className="truncate block font-poppins text-xs leading-tight">
                             {currentTrack?.name || "No track playing"}
                         </strong>
-                        <small className="opacity-70 truncate block  text-xs font-dm-sans leading-none">
+                        <small className="opacity-70 truncate block  text-xs font-dm-sans leading-tight">
                             {currentTrack?.artists.map((a: any) => a.name).join(", ") || "-"}
                         </small>
                     </div>

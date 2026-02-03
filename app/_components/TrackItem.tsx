@@ -10,6 +10,7 @@ import { FaPlay, FaPause, FaCompactDisc } from "react-icons/fa";
 import { useSpotifyPlayer } from "./SpotifyPlayerProvider";
 
 export default function TrackItem({ track, index, highlighted }: TrackRowProps) {
+
   const ref = useRef<HTMLLIElement>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -23,7 +24,8 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
   const image: MediaImage | undefined = spotifyImagesToMediaImages(album?.images, name)?.[0];
   const showAlbumImage = !pathname?.startsWith("/album") && image;
 
-  const { playContext, togglePlay, currentTrackId, isPaused } = useSpotifyPlayer();
+  const { playContext, togglePlay, currentTrackId, isPaused, setIsPlayerVisible } = useSpotifyPlayer();
+
 
   const isCurrentTrack = currentTrackId === track.id;
   const isPlaying = isCurrentTrack && !isPaused;
@@ -38,6 +40,9 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
     if (isCurrentTrack) {
       togglePlay(); // pause/resume if same track
     } else if (track.uri) {
+      // Show player if it was hidden
+      setIsPlayerVisible(true);
+
       playContext(album.uri, track.uri);
 
       // Remove highlight from URL if it exists
@@ -123,7 +128,7 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
         </span>
 
         {/* Artists */}
-        <small className="opacity-50 truncate">
+        <small className="opacity-70 truncate">
           {artists?.map((a, i) => (
             <span key={a.id ?? a.name}>
               <Link

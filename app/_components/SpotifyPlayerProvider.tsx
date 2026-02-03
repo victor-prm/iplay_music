@@ -9,13 +9,15 @@ interface SpotifyPlayerContextValue {
     isPaused: boolean;
     positionMs: number;
     durationMs: number;
+
+    isPlayerVisible: boolean;
+    setIsPlayerVisible: React.Dispatch<React.SetStateAction<boolean>>;
+
     playTrack: (spotifyUri: string) => void;
     playContext: (contextUri: string, offsetTrackUri?: string) => void;
     togglePlay: () => void;
     token: string;
-
 }
-
 const SpotifyPlayerContext = createContext<SpotifyPlayerContextValue | undefined>(undefined);
 
 export function useSpotifyPlayer() {
@@ -36,6 +38,7 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
     const [isPaused, setIsPaused] = useState(true);
     const [positionMs, setPositionMs] = useState(0);
     const [durationMs, setDurationMs] = useState(0);
+    const [isPlayerVisible, setIsPlayerVisible] = useState(true);
 
     useEffect(() => {
         if (!token || typeof window === "undefined") return;
@@ -116,7 +119,7 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
         player?.togglePlay();
     };
 
-    return(
+    return (
         <SpotifyPlayerContext.Provider
             value={{
                 player,
@@ -125,10 +128,14 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
                 isPaused,
                 positionMs,
                 durationMs,
+
+                isPlayerVisible,
+                setIsPlayerVisible,
+
                 playTrack,
                 playContext,
                 togglePlay,
-                token, // include it here
+                token,
             }}
         >
             {children}
