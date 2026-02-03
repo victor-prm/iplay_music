@@ -65,10 +65,15 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
     <li
       ref={ref}
       className={`relative flex items-center gap-2 p-2 transition-colors
-        even:bg-iplay-white/2.5
-        ${highlighted ? "bg-iplay-pink/20! ring-1! ring-iplay-pink!" : ""}`}
+    even:bg-iplay-white/2.5 cursor-pointer
+    ${highlighted ? "bg-iplay-pink/20! ring-1! ring-iplay-pink!" : ""}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={(e) => {
+        // Ignore clicks on links
+        if ((e.target as HTMLElement).closest("a")) return;
+        handlePlayPause();
+      }}
     >
       {/* Hover background only */}
       {hovered && (
