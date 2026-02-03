@@ -26,6 +26,8 @@ async function getLastPlayback(token: string) {
 export default function SpotifyGlobalPlayer({ setIsPlayerVisible }: SpotifyGlobalPlayerProps) {
     const { player, deviceId, isPaused, token } = useSpotifyPlayer();
     const [currentTrack, setCurrentTrack] = useState<any>(null);
+    const { togglePlay, currentTrackId } = useSpotifyPlayer(); // add togglePlay
+
 
 
     const [positionMs, setPositionMs] = useState(0);
@@ -128,21 +130,27 @@ export default function SpotifyGlobalPlayer({ setIsPlayerVisible }: SpotifyGloba
     /* ──────────────────────────────────────────────
        4. Play last track
        ────────────────────────────────────────────── */
+
     const handlePlay = async () => {
         if (!player || !deviceId || !currentTrack) return;
 
         // Show the player if hidden
         if (setIsPlayerVisible) setIsPlayerVisible(true);
 
-        // Play the track
-        await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ uris: [currentTrack.uri] }),
-        });
+        if (currentTrackId === currentTrack.id) {
+            // Same track → toggle play/pause
+            togglePlay();
+        } else {
+            // Different track → start from beginning
+            await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ uris: [currentTrack.uri] }),
+            });
+        }
     };
 
     const formatTime = (ms: number) => {
