@@ -27,6 +27,54 @@
   --color-iplay-cyan: #00A1CB;
   --color-iplay-blue: #115793;
 
+  --animate-fade-in-scale: fade-in-scale 0.6s ease-out forwards;
+  --animate-fade-in-ltr: fade-in-ltr 0.6s ease-out forwards;
+  --animate-fade-splashscreen: fade-splashscreen 2.5s ease-out forwards;
+
+  @keyframes fade-in-scale {
+    0% {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes fade-splashscreen {
+    0% {
+      opacity: 1;
+    }
+
+    90% {
+      opacity: 1;
+    }
+
+    99% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 0;
+      display: none;
+    }
+  }
+
+  @keyframes fade-in-ltr {
+    0% {
+      opacity: 0;
+      transform: translateX(-10%);
+      transform: rotate(10deg)
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0%);
+      transform: rotate(0deg)
+    }
+  }
 }
 
 
@@ -67,14 +115,4 @@ body {
 ::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 100vh;
-}
-
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
 }
