@@ -9,7 +9,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { FaPlay, FaPause, FaCompactDisc } from "react-icons/fa";
 import { useSpotifyPlayer } from "./SpotifyPlayerProvider";
 
-export default function TrackItem({ track, index, highlighted }: TrackRowProps) {
+export default function TrackItem({
+  track,
+  index,
+  highlighted,
+  tracks,
+  isTopTracks = false, // default
+}: TrackRowProps) {
 
   const ref = useRef<HTMLLIElement>(null);
   const pathname = usePathname();
@@ -38,14 +44,18 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
 
   const handlePlayPause = () => {
     if (isCurrentTrack) {
-      togglePlay(); // pause/resume if same track
+      togglePlay(); // pause/resume
     } else if (track.uri) {
-      // Show player if it was hidden
       setIsPlayerVisible(true);
 
-      playContext(album.uri, track.uri);
+      // Always pass clicked track as array
+      if (isTopTracks) {
+        playContext(undefined, [track.uri], tracks.map(t => t.uri));
+      } else {
+        playContext(album?.uri, [track.uri], tracks.map(t => t.uri));
+      }
 
-      // Remove highlight from URL if it exists
+      // Remove highlight from URL
       const url = new URL(window.location.href);
       if (url.searchParams.has("highlight")) {
         url.searchParams.delete("highlight");
@@ -120,7 +130,7 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
 
       {/* Album image */}
       {showAlbumImage && (
-        <div className="size-10 overflow-hidden rounded-sm font-poppins z-10">
+        <div className="size-10 overflow-hidden rounded-sm font-poppins z-10 shrink-0">
           <MediaFigure images={[image]} />
         </div>
       )}
@@ -149,8 +159,8 @@ export default function TrackItem({ track, index, highlighted }: TrackRowProps) 
       </div>
 
       {/* Album & duration */}
-      <div className="flex gap-4 ml-auto items-center w-fit">
-        <small className="font-dm-sans text-sm">
+      <div className="flex gap-4 ml-auto items-center">
+        <small className="font-dm-sans text-sm line-clamp-1">
           {linkToAlbum ? (
             <Link
               href={`/album/${album.id}`}

@@ -29,6 +29,8 @@ export default function TrackList({ discs, highlightId, title }: TrackListProps)
                   track={track}
                   index={i + 1}
                   highlighted={track.id === highlightId}
+                  tracks={disc.tracks}
+                  isTopTracks={!!title && title === "Popular songs"}
                 />
               ))}
             </ul>

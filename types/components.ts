@@ -68,8 +68,10 @@ export interface SearchResultProps {
 
 export interface TrackRowProps {
   track: TrackFull;
-  index?: number;
+  index: number;
   highlighted?: boolean;
+  tracks: TrackFull[];
+  isTopTracks?: boolean;
 }
 
 export type TrackListProps = {
@@ -80,3 +82,4 @@ export type TrackListProps = {
   highlightId?: string
   title?: string
 }
+

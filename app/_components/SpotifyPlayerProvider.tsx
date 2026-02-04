@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode, useRef } from "react";
 
 interface SpotifyPlayerContextValue {
     player: Spotify.Player | null;
@@ -14,10 +14,18 @@ interface SpotifyPlayerContextValue {
     setIsPlayerVisible: React.Dispatch<React.SetStateAction<boolean>>;
 
     playTrack: (spotifyUri: string) => void;
-    playContext: (contextUri: string, offsetTrackUri?: string) => void;
+
+    // Update type to match the new signature:
+    playContext: (
+        contextUri?: string,
+        clickedTrackUris?: string[],
+        fullQueue?: string[]
+    ) => void;
+
     togglePlay: () => void;
     token: string;
 }
+
 const SpotifyPlayerContext = createContext<SpotifyPlayerContextValue | undefined>(undefined);
 
 export function useSpotifyPlayer() {
@@ -39,6 +47,17 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
     const [positionMs, setPositionMs] = useState(0);
     const [durationMs, setDurationMs] = useState(0);
     const [isPlayerVisible, setIsPlayerVisible] = useState(true);
+    const [queue, setQueue] = useState<string[]>([]); // array of Spotify track URIs
+    const [queueIndex, setQueueIndex] = useState<number>(0);
+    const queueIndexRef = useRef(queueIndex);
+    useEffect(() => {
+        queueIndexRef.current = queueIndex;
+    }, [queueIndex]);
+
+    const queueRef = useRef<string[]>([]);
+    useEffect(() => {
+        queueRef.current = queue;
+    }, [queue]);
 
     useEffect(() => {
         if (!token || typeof window === "undefined") return;
@@ -64,6 +83,8 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
                 console.log("Spotify Player Ready with device ID", device_id);
             });
 
+            let trackFinishedHandled = false;
+
             sdkPlayer.addListener("player_state_changed", (state: any) => {
                 if (!state) return;
 
@@ -71,7 +92,38 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
                 setIsPaused(state.paused);
                 setPositionMs(state.position);
                 setDurationMs(state.duration);
+
+                const currentQueue = queueRef.current;
+                const currentIndex = queueIndexRef.current;
+
+                // Track almost finished
+                const isTrackEnding = !state.paused && state.position >= state.duration - 200;
+
+                if (
+                    isTrackEnding &&
+                    currentQueue.length > 0 &&
+                    currentIndex < currentQueue.length - 1 &&
+                    !trackFinishedHandledRef.current
+                ) {
+                    trackFinishedHandledRef.current = true;
+                    const nextIndex = currentIndex + 1;
+                    queueIndexRef.current = nextIndex;
+                    setQueueIndex(nextIndex);
+                    playTrack(currentQueue[nextIndex]);
+                }
+
+                if (state.position < state.duration - 200) {
+                    trackFinishedHandledRef.current = false;
+                }
+
+                // Reset flag if track restarted or playing again
+                if (state.position < state.duration - 200) {
+                    trackFinishedHandled = false;
+                }
             });
+
+            sdkPlayer.connect();
+            setPlayer(sdkPlayer);
 
             sdkPlayer.connect();
             setPlayer(sdkPlayer);
@@ -86,6 +138,8 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
     const playTrack = (spotifyUri: string) => {
         if (!deviceId) return;
 
+        setCurrentTrackId(spotifyUri); // so TrackItem updates immediately
+
         fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
             method: "PUT",
             body: JSON.stringify({ uris: [spotifyUri] }),
@@ -97,12 +151,37 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
     };
 
     // Play a context (album/playlist) and optionally start at a specific track
-    const playContext = (contextUri: string, offsetTrackUri?: string) => {
-        if (!deviceId) return;
+    const trackFinishedHandledRef = useRef(false);
 
-        const body: any = { context_uri: contextUri };
-        if (offsetTrackUri) {
-            body.offset = { uri: offsetTrackUri };
+    // Play a context (album/playlist) and start at a specific track
+    const playContext = (
+        contextUri?: string,
+        clickedTrackUris?: string[], // clicked track(s)
+        fullQueue?: string[]         // full list
+    ) => {
+        if (!deviceId || !clickedTrackUris?.length || !fullQueue?.length) return;
+
+        const clickedTrackUri = clickedTrackUris[0];
+
+        // Simplified: slice the queue from the clicked track onward
+        const startIndex = fullQueue.indexOf(clickedTrackUri);
+        const slicedQueue = fullQueue.slice(startIndex); // everything from clicked track to end
+
+        // Update state
+        setQueue(slicedQueue);
+        queueRef.current = slicedQueue;
+
+        setQueueIndex(0);           // always 0 because queue is sliced
+        queueIndexRef.current = 0;
+
+        setCurrentTrackId(clickedTrackUri);
+
+        const body: any = {};
+        if (contextUri) {
+            body.context_uri = contextUri;
+            body.offset = { uri: clickedTrackUri };
+        } else {
+            body.uris = slicedQueue;
         }
 
         fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
@@ -115,6 +194,7 @@ export default function SpotifyPlayerProvider({ children, token }: ProviderProps
         });
     };
 
+    // Toggle pause/play on the current track
     const togglePlay = () => {
         player?.togglePlay();
     };
